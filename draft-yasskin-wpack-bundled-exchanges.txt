@@ -4,8 +4,8 @@
 
 Network Working Group                                         J. Yasskin
 Internet-Draft                                                    Google
-Intended status: Standards Track                           13 April 2021
-Expires: 15 October 2021
+Intended status: Standards Track                            3 March 2022
+Expires: 4 September 2022
 
 
                               Web Bundles
@@ -46,11 +46,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 October 2021.
+   This Internet-Draft will expire on 4 September 2022.
 
 Copyright Notice
 
-   Copyright (c) 2021 IETF Trust and the persons identified as the
+   Copyright (c) 2022 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -58,9 +58,9 @@ Copyright Notice
    license-info) in effect on the date of publication of this document.
    Please review these documents carefully, as they describe your rights
    and restrictions with respect to this document.  Code Components
-   extracted from this document must include Simplified BSD License text
-   as described in Section 4.e of the Trust Legal Provisions and are
-   provided without warranty as described in the Simplified BSD License.
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
 
 Table of Contents
 
@@ -139,13 +139,13 @@ Table of Contents
 
 2.2.  Naming a representation
 
-   Representations within a bundle are named by their "Content-Location"
+   Representations within a bundle are named by their Content-Location
    (Section 7.8 of [I-D.ietf-httpbis-semantics]), which holds a URL.
    This is also known as the representation's URL.
 
    Multiple representations within a bundle can have the same URL, in
    which case they are distinguished by the content negotiation
-   information contained in their "Variants" and "Variant-Key" headers
+   information contained in their Variants and Variant-Key headers
    ([I-D.ietf-httpbis-variants]).
 
    This identifying information for each representation is stored in an
@@ -210,31 +210,30 @@ Table of Contents
    stream a bundle from the network can always wait for a known number
    of bytes instead of needing to implement a streaming CBOR parser.
 
-   The "magic" number is "🌐📦" (U+1F310 U+1F4E6) encoded in UTF-8.  With
+   The magic number is "🌐📦" (U+1F310 U+1F4E6) encoded in UTF-8.  With
    the CBOR initial bytes for the array and bytestring, this makes the
-   format identifiable by looking for "8? 48" (in base 16) followed by
+   format identifiable by looking for 8? 48 (in base 16) followed by
    that UTF-8 encoding.  Parsers MUST only check the initial nibble of
-   the initial "8?" byte in order to accommodate any future version's
+   the initial 8? byte in order to accommodate any future version's
    change in the number of array elements (up to 15).
 
-   The "version" bytestring MUST be "31 00 00 00" in base 16 (an ASCII
-   "1" followed by 3 0s) for this version of bundles.  If the recipient
+   The version bytestring MUST be 31 00 00 00 in base 16 (an ASCII "1"
+   followed by 3 0s) for this version of bundles.  If the recipient
    doesn't support the version in this field, it MUST either ignore the
-   bundle or fetch and use the content of the "primary-url" field
-   instead.
+   bundle or fetch and use the content of the primary-url field instead.
 
-   The "primary-url" field identifies both a fallback when the recipient
+   The primary-url field identifies both a fallback when the recipient
    doesn't understand the bundle and a default resource inside the
    bundle to use when the recipient doesn't have more specific
    instructions.  This field MAY be an empty string, although protocols
    using bundles MAY themselves forbid that empty value.
 
-   The "section-lengths" and "sections" arrays contain the actual
-   content of the bundle and are defined in Section 4.2.  The "section-
-   lengths" array is embedded in a byte string to facilitate reading it
-   from a network.  This byte string MUST be less than 8192 (8*1024)
-   bytes long, and parsers MUST NOT load any data from a "section-
-   lengths" item longer than this.
+   The section-lengths and sections arrays contain the actual content of
+   the bundle and are defined in Section 4.2.  The section-lengths array
+   is embedded in a byte string to facilitate reading it from a network.
+   This byte string MUST be less than 8192 (8*1024) bytes long, and
+   parsers MUST NOT load any data from a section-lengths item longer
+   than this.
 
    The bundle ends with an 8-byte integer holding the length of the
    whole bundle.
@@ -264,45 +263,45 @@ Table of Contents
    This section is to be removed before publishing as an RFC.
 
    Implementations of drafts of this specification MUST NOT use a
-   "version" string of "31 00 00 00" (base 16).  They MUST instead
-   define an implementation-specific 4-byte string starting with "62"
-   ("b") to identify which draft is implemented.
+   version string of 31 00 00 00 (base 16).  They MUST instead define an
+   implementation-specific 4-byte string starting with 62 (b) to
+   identify which draft is implemented.
 
 4.2.  Bundle sections
 
    A bundle's content is in a series of sections, which can be accessed
-   randomly using the information in the "section-lengths" CBOR item:
+   randomly using the information in the section-lengths CBOR item:
 
    section-lengths = [* (section-name: tstr, length: uint) ],
 
    This field lists the named sections in the bundle in the order they
    appear, with each section name followed by the length in bytes of the
-   corresponding CBOR item in the "sections" array.  This allows a
-   random-access parser (Section 3) to jump directly to the section it
-   needs.  This specification defines the following sections:
+   corresponding CBOR item in the sections array.  This allows a random-
+   access parser (Section 3) to jump directly to the section it needs.
+   This specification defines the following sections:
 
-   *  ""index"" (Section 4.2.1)
+   *  "index" (Section 4.2.1)
 
-   *  ""manifest"" (Section 4.2.2)
+   *  "manifest" (Section 4.2.2)
 
-   *  ""critical"" (Section 4.2.3)
+   *  "critical" (Section 4.2.3)
 
-   *  ""responses"" (Section 4.3)
+   *  "responses" (Section 4.3)
 
    Future specifications can register new section names as described in
    Section 6.2, in order to extend the format without incrementing its
    version number.
 
-   The ""responses"" section MUST appear after the other three sections
+   The "responses" section MUST appear after the other three sections
    defined here, and parsers MUST NOT load any data if that is not the
    case.
 
-   The "sections" array contains the sections' content.  The length of
-   this array MUST be exactly half the length of the "section-lengths"
+   The sections array contains the sections' content.  The length of
+   this array MUST be exactly half the length of the section-lengths
    array, and parsers MUST NOT load any data if that is not the case.
 
-   The bundle MUST contain the ""index"" and ""responses"" sections.
-   All other sections are optional.
+   The bundle MUST contain the "index" and "responses" sections.  All
+   other sections are optional.
 
 4.2.1.  The index section
 
@@ -310,18 +309,17 @@ Table of Contents
    variants-value = bstr
    location-in-responses = (offset: uint, length: uint)
 
-   The ""index"" section defines the set of HTTP representations in the
-   bundle and identifies their locations in the ""responses"" section.
-   It consists of a CBOR map whose keys are the URLs of the
-   representations in the bundle (Section 2.2).  The value of an index
-   entry is an array whose first item is a "Variants" header field value
+   The "index" section defines the set of HTTP representations in the
+   bundle and identifies their locations in the "responses" section.  It
+   consists of a CBOR map whose keys are the URLs of the representations
+   in the bundle (Section 2.2).  The value of an index entry is an array
+   whose first item is a Variants header field value
    ([I-D.ietf-httpbis-variants]) or the empty string.  This is followed
    by a sequence of offset/length pairs, one for each representation of
    this resource.  The offset is relative to the start of the
-   ""responses"" section, with an offset of 0 referring to the head of
-   the CBOR "responses" array itself.  The length is the length in bytes
-   of the "response" CBOR item holding this representation
-   (Section 4.3).
+   "responses" section, with an offset of 0 referring to the head of the
+   CBOR responses array itself.  The length is the length in bytes of
+   the response CBOR item holding this representation (Section 4.3).
 
    If the first item in the value of an index entry is empty, it MUST be
    followed by exactly one offset/length pair.  This means there is a
@@ -329,12 +327,12 @@ Table of Contents
 
    Otherwise, the first item MUST be followed by one offset/length pair
    for each of the possible combinations of available-values within the
-   "Variants" value (the first item of the array) in lexicographic (row-
+   Variants value (the first item of the array) in lexicographic (row-
    major) order.
 
-   For example, given a "Variants" value of "accept-encoding=(gzip br),
-   accept-language=(en fr ja)", the list of offset/length pairs will
-   correspond to the "Variant-Key"s:
+   For example, given a Variants value of accept-encoding=(gzip br),
+   accept-language=(en fr ja), the list of offset/length pairs will
+   correspond to the Variant-Keys:
 
    *  (gzip en)
 
@@ -348,9 +346,9 @@ Table of Contents
 
    *  (br ja)
 
-   The order of variant-axes is important.  If the "Variants" value were
-   "accept-language=(en fr ja), accept-encoding=(gzip br)" instead, the
-   "location-in-responses" pairs would instead correspond to:
+   The order of variant-axes is important.  If the Variants value were
+   accept-language=(en fr ja), accept-encoding=(gzip br) instead, the
+   location-in-responses pairs would instead correspond to:
 
    *  (en gzip)
 
@@ -380,9 +378,9 @@ Table of Contents
 
    The bundle can contain multiple representations at this URL, and the
    client is expected to content-negotiate for the best one.  For
-   example, a client might select the one matching an "accept" header of
-   "application/manifest+json" ([appmanifest]) and an "accept-language"
-   header of "es-419".
+   example, a client might select the one matching an accept header of
+   application/manifest+json ([appmanifest]) and an accept-language
+   header of es-419.
 
    Many bundles have a choice between identifying their manifest in this
    section or in their primary resource, especially if that resource is
@@ -412,9 +410,9 @@ Table of Contents
    responses, each of which is pointed to by one or more entries in the
    "index" section (Section 4.2.1).
 
-   The length of the "headers" byte string in a response MUST be less
-   than 524288 (512*1024) bytes, and recipients MUST fail to load a
-   response with longer headers.
+   The length of the headers byte string in a response MUST be less than
+   524288 (512*1024) bytes, and recipients MUST fail to load a response
+   with longer headers.
 
    When receiving a bundle in a stream, the recipient MAY process the
    headers before the payload has been received and MAY start processing
@@ -425,23 +423,22 @@ Table of Contents
    described in Section 8.1.2 of [RFC7540].  Response pseudo-headers
    (Section 8.1.2.4 of [RFC7540] are included in this headers map.
 
-   Each response's headers MUST include a ":status" pseudo-header with
+   Each response's headers MUST include a :status pseudo-header with
    exactly 3 ASCII decimal digits and MUST NOT include any other pseudo-
    headers.
 
    If a response's payload is not empty, its headers MUST include a
-   "Content-Type" header (Section 7.4 of [I-D.ietf-httpbis-semantics]).
+   Content-Type header (Section 7.4 of [I-D.ietf-httpbis-semantics]).
    The client MUST interpret the following payload as this specified
    media type instead of trying to sniff a media type from the bytes of
-   the payload, for example by appending an artificial "X-Content-Type-
-   Options: nosniff" header field ([FETCH]) to downstream protocols.
+   the payload, for example by appending an artificial X-Content-Type-
+   Options: nosniff header field ([FETCH]) to downstream protocols.
 
 4.4.  Serving constraints
 
-   When served over HTTP, a response containing an "application/
-   webbundle" payload MUST include at least the following response
-   header fields, to reduce content sniffing vulnerabilities
-   (Section 5.2):
+   When served over HTTP, a response containing an application/webbundle
+   payload MUST include at least the following response header fields,
+   to reduce content sniffing vulnerabilities (Section 5.2):
 
    *  Content-Type: application/webbundle
 
@@ -464,23 +461,23 @@ Table of Contents
 
 5.2.  Content sniffing
 
-   While modern browsers tend to trust the "Content-Type" header sent
-   with a resource, especially when accompanied by "X-Content-Type-
-   Options: nosniff", plugins will sometimes search for executable
-   content buried inside a resource and execute it in the context of the
-   origin that served the resource, leading to XSS vulnerabilities.  For
-   example, some PDF reader plugins look for "%PDF" anywhere in the
-   first 1kB and execute the code that follows it.
+   While modern browsers tend to trust the Content-Type header sent with
+   a resource, especially when accompanied by X-Content-Type-Options:
+   nosniff, plugins will sometimes search for executable content buried
+   inside a resource and execute it in the context of the origin that
+   served the resource, leading to XSS vulnerabilities.  For example,
+   some PDF reader plugins look for %PDF anywhere in the first 1kB and
+   execute the code that follows it.
 
-   The "application/webbundle" format defined above includes URLs and
+   The application/webbundle format defined above includes URLs and
    request headers early in the format, which an attacker could use to
    cause these plugins to sniff a bad content type.
 
    To avoid vulnerabilities, in addition to the response header
    requirements in Section 4.4, servers are advised to only serve an
-   "application/webbundle" resource from a domain if it would also be
-   safe for that domain to serve the bundle's content directly, and to
-   follow at least one of the following strategies:
+   application/webbundle resource from a domain if it would also be safe
+   for that domain to serve the bundle's content directly, and to follow
+   at least one of the following strategies:
 
    1.  Only serve bundles from dedicated domains that don't have access
        to sensitive cookies or user storage.
@@ -515,13 +512,13 @@ Table of Contents
            headers.
 
    If the server serves responses that are written by a potential
-   attacker but then escaped, the "application/webbundle" format allows
+   attacker but then escaped, the application/webbundle format allows
    the attacker to use the length of the response to control a few bytes
    before the start of the response.  Any existing mechanisms that
    prevent polyglot documents probably keep working in the face of this
    new attack, but we don't have a guarantee of that.
 
-   To encourage servers to include the "X-Content-Type-Options: nosniff"
+   To encourage servers to include the X-Content-Type-Options: nosniff
    header field, clients SHOULD reject bundles served without it.
 
 6.  IANA considerations
@@ -539,8 +536,8 @@ Table of Contents
    *  Required parameters:
 
       -  v: A string denoting the version of the file format.
-         ([RFC5234] ABNF: "version = 1*(DIGIT/%x61-7A)") The version
-         defined in this specification is "1".
+         ([RFC5234] ABNF: version = 1*(DIGIT/%x61-7A)) The version
+         defined in this specification is 1.
 
          Note: RFC EDITOR PLEASE DELETE THIS NOTE; Implementations of
          drafts of this specification MUST NOT use simple integers to
@@ -632,67 +629,66 @@ Table of Contents
    [CBORbis]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
-              <https://datatracker.ietf.org/doc/html/rfc8949>.
+              <https://www.rfc-editor.org/rfc/rfc8949>.
 
    [CDDL]     Birkholz, H., Vigano, C., and C. Bormann, "Concise Data
               Definition Language (CDDL): A Notational Convention to
               Express Concise Binary Object Representation (CBOR) and
               JSON Data Structures", RFC 8610, DOI 10.17487/RFC8610,
-              June 2019,
-              <https://datatracker.ietf.org/doc/html/rfc8610>.
+              June 2019, <https://www.rfc-editor.org/rfc/rfc8610>.
 
-   [FETCH]    WHATWG, "Fetch", April 2021,
+   [FETCH]    WHATWG, "Fetch", March 2022,
               <https://fetch.spec.whatwg.org/>.
 
    [I-D.ietf-httpbis-semantics]
               Fielding, R. T., Nottingham, M., and J. Reschke, "HTTP
               Semantics", Work in Progress, Internet-Draft, draft-ietf-
-              httpbis-semantics-15, 30 March 2021,
+              httpbis-semantics-19, 12 September 2021,
               <https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-
-              semantics-15.txt>.
+              semantics-19>.
 
    [I-D.ietf-httpbis-variants]
               Nottingham, M., "HTTP Representation Variants", Work in
               Progress, Internet-Draft, draft-ietf-httpbis-variants-06,
               3 November 2019, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-httpbis-variants-06.txt>.
+              draft-ietf-httpbis-variants-06>.
 
    [IANA.media-types]
               IANA, "Media Types",
-              <http://www.iana.org/assignments/media-types>.
+              <https://www.iana.org/assignments/media-types>.
 
-   [INFRA]    WHATWG, "Infra", April 2021,
+   [INFRA]    WHATWG, "Infra", March 2022,
               <https://infra.spec.whatwg.org/>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
-              <https://datatracker.ietf.org/doc/html/rfc2119>.
+              <https://www.rfc-editor.org/rfc/rfc2119>.
 
    [RFC5234]  Crocker, D., Ed. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234,
               DOI 10.17487/RFC5234, January 2008,
-              <https://datatracker.ietf.org/doc/html/rfc5234>.
+              <https://www.rfc-editor.org/rfc/rfc5234>.
 
    [RFC7540]  Belshe, M., Peon, R., and M. Thomson, Ed., "Hypertext
               Transfer Protocol Version 2 (HTTP/2)", RFC 7540,
               DOI 10.17487/RFC7540, May 2015,
-              <https://datatracker.ietf.org/doc/html/rfc7540>.
+              <https://www.rfc-editor.org/rfc/rfc7540>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://datatracker.ietf.org/doc/html/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [URL]      WHATWG, "URL", April 2021, <https://url.spec.whatwg.org/>.
+   [URL]      WHATWG, "URL", March 2022, <https://url.spec.whatwg.org/>.
 
 7.2.  Informative References
 
    [I-D.yasskin-wpack-use-cases]
               Yasskin, J., "Use Cases and Requirements for Web
               Packages", Work in Progress, Internet-Draft, draft-
-              yasskin-wpack-use-cases-01, 27 July 2020,
+              yasskin-wpack-use-cases-02, 13 April 2021,
               <https://datatracker.ietf.org/doc/html/draft-yasskin-
-              wpack-use-cases-01.txt>.
+              wpack-use-cases-02>.
 
 Appendix A.  Change Log
 
@@ -763,5 +759,4 @@ Author's Address
 
    Jeffrey Yasskin
    Google
-
    Email: jyasskin@chromium.org

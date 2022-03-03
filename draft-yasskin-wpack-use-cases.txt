@@ -4,8 +4,8 @@
 
 Network Working Group                                         J. Yasskin
 Internet-Draft                                                    Google
-Intended status: Informational                             13 April 2021
-Expires: 15 October 2021
+Intended status: Informational                              3 March 2022
+Expires: 4 September 2022
 
 
               Use Cases and Requirements for Web Packages
@@ -42,11 +42,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 October 2021.
+   This Internet-Draft will expire on 4 September 2022.
 
 Copyright Notice
 
-   Copyright (c) 2021 IETF Trust and the persons identified as the
+   Copyright (c) 2022 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -54,9 +54,9 @@ Copyright Notice
    license-info) in effect on the date of publication of this document.
    Please review these documents carefully, as they describe your rights
    and restrictions with respect to this document.  Code Components
-   extracted from this document must include Simplified BSD License text
-   as described in Section 4.e of the Trust Legal Provisions and are
-   provided without warranty as described in the Simplified BSD License.
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
 
 Table of Contents
 
@@ -156,10 +156,10 @@ Table of Contents
 
    Alex can download a file containing a website (a PWA
    (https://developers.google.com/web/progressive-web-apps/checklist))
-   including a Service Worker from origin "O", and transmit it to their
+   including a Service Worker from origin O, and transmit it to their
    peer Bailey, and then Bailey can install the Service Worker with a
-   proof that it came from "O".  This saves Bailey the bandwidth costs
-   of transferring the website.
+   proof that it came from O.  This saves Bailey the bandwidth costs of
+   transferring the website.
 
    There are roughly two ways to accomplish this:
 
@@ -178,26 +178,26 @@ Table of Contents
 
    Associated requirements for just the Service Worker:
 
-   *  Indexed by URL: The "register()" and "importScripts()" calls have
+   *  Indexed by URL: The register() and importScripts() calls have
       semantics that depend on the URL.
 
-   *  Signing as an origin: To prove that the file came from "O".
+   *  Signing as an origin: To prove that the file came from O.
 
-   *  Signing uses existing TLS certificates: So "O" doesn't have to
-      spend lots of money buying a specialized certificate.
+   *  Signing uses existing TLS certificates: So O doesn't have to spend
+      lots of money buying a specialized certificate.
 
    *  Cryptographic agility: Today's algorithms will eventually be
       obsolete and will need to be replaced.
 
-   *  Certificate revocation: "O"'s certificate might be compromised or
+   *  Certificate revocation: O's certificate might be compromised or
       mis-issued, and the attacker shouldn't then get an infinite
       ability to mint packages.
 
-   *  Downgrade prevention: "O"'s site might have an XSS vulnerability,
+   *  Downgrade prevention: O's site might have an XSS vulnerability,
       and attackers with an old signed package shouldn't be able to take
       advantage of the XSS forever.
 
-   *  Metadata: Just enough to generate the "register()" call, which is
+   *  Metadata: Just enough to generate the register() call, which is
       less than a full W3C Application Manifest.
 
    Additional associated requirements for packaged resources:
@@ -205,7 +205,7 @@ Table of Contents
    *  Indexed by URL: Resources on the web are addressed by URL.
 
    *  Request headers: If Bailey's running a different browser from Alex
-      or has a different language configured, the "accept*" headers are
+      or has a different language configured, the accept* headers are
       important for selecting which resource to use at each URL.
 
    *  Response headers: The meaning of a resource is heavily influenced
@@ -241,7 +241,7 @@ Table of Contents
    Alex can download a file containing a large website (e.g.  Wikipedia)
    from its origin, save it to transferrable storage (e.g. an SD card),
    and hand it to their peer Bailey.  Then Bailey can browse the website
-   with a proof that it came from "O".  Bailey may not have the storage
+   with a proof that it came from O.  Bailey may not have the storage
    space to copy the website before browsing it.
 
    This use case is harder for publishers to support if we specialize
@@ -283,8 +283,8 @@ Table of Contents
 
    Lots of websites link to other websites.  Many of these source sites
    would like the targets of these links to load quickly.  The source
-   could use "<link rel="prefetch">" to prefetch the target of a link,
-   but if the user doesn't actually click that link, that leaks the fact
+   could use <link rel="prefetch"> to prefetch the target of a link, but
+   if the user doesn't actually click that link, that leaks the fact
    that the user saw a page that linked to the target.  This can be true
    even if the prefetch is made without browser credentials because of
    mechanisms like TLS session IDs.
@@ -360,8 +360,8 @@ Table of Contents
       storage device.
 
    *  Request headers: If different users' browsers have different
-      capabilities or preferences, the "accept*" headers are important
-      for selecting which resource to use at each URL.
+      capabilities or preferences, the accept* headers are important for
+      selecting which resource to use at each URL.
 
    *  Response headers: The meaning of a resource is heavily influenced
       by its HTTP response headers.
@@ -429,12 +429,12 @@ Table of Contents
 
    Large programs are built from smaller components.  In the case of the
    web, components can be included either as Javascript files or as
-   "<iframe>"d subresources.  In the first case, the packager could copy
+   <iframe>d subresources.  In the first case, the packager could copy
    the JS files to their own origin; but in the second, it may be
-   important for the "<iframe>"d resources to be able to make same-
-   origin (https://html.spec.whatwg.org/multipage/origin.html#same-
-   origin) requests back to their own origin, for example to implement
-   federated sign-in.
+   important for the <iframe>d resources to be able to make same-origin
+   (https://html.spec.whatwg.org/multipage/origin.html#same-origin)
+   requests back to their own origin, for example to implement federated
+   sign-in.
 
    Associated requirements:
 
@@ -509,14 +509,14 @@ Table of Contents
    section of the filesystem that's as protected as the browser's
    executable, and if registering a Service Worker from a page inside a
    package passed the full package contents to the Service Worker's
-   "install" event, the device manufacturer could provide web packages
-   for each pre-installed application that would work in the user's
-   chosen browser.
+   install event, the device manufacturer could provide web packages for
+   each pre-installed application that would work in the user's chosen
+   browser.
 
    Associated requirements:
 
-   *  Service Worker integration: To pass the package into the "install"
-      event and from there get its contents into a "Cache".
+   *  Service Worker integration: To pass the package into the install
+      event and from there get its contents into a Cache.
 
 2.2.7.  Protecting Users from a Compromised Frontend
 
@@ -682,26 +682,25 @@ Table of Contents
 
 3.1.2.  Request headers
 
-   Resource keys should include request headers like "accept" and
-   "accept-language", which allows content-negotiated resources to be
+   Resource keys should include request headers like accept and accept-
+   language, which allows content-negotiated resources to be
    represented.
 
-   This would require an extension to [MHTML], which uses the "content-
-   location" response header to encode the requested URL, but has no way
+   This would require an extension to [MHTML], which uses the content-
+   location response header to encode the requested URL, but has no way
    to encode other request headers.  MHTML also has no instructions for
-   handling multiple resources with the same "content-location".
+   handling multiple resources with the same content-location.
 
    This also requires an extension to [ZIP]: we'd need to encode the
    request headers into ZIP's filename fields.
 
 3.1.3.  Response headers
 
-   Resources should include their HTTP response headers, like "content-
-   type", "content-encoding", "expires", "content-security-policy", etc.
+   Resources should include their HTTP response headers, like content-
+   type, content-encoding, expires, content-security-policy, etc.
 
    This requires an extension to [ZIP]: we'd need something like [JAR]'s
-   "META-INF" directory to hold extra metadata beyond the resource's
-   body.
+   META-INF directory to hold extra metadata beyond the resource's body.
 
 3.1.4.  Signing as an origin
 
@@ -732,8 +731,8 @@ Table of Contents
 
 3.1.6.  Resources from multiple origins in a package
 
-   A package from origin "A" can contain resources from origin "B"
-   authenticated at the same level as those from "A".
+   A package from origin A can contain resources from origin B
+   authenticated at the same level as those from A.
 
 3.1.7.  Cryptographic agility
 
@@ -873,9 +872,9 @@ Table of Contents
 3.2.15.  Service Worker integration
 
    When a web page inside a package registers a Service Worker, that
-   Service Worker's "install" event should receive a reference to the
-   full package, with a way to copy the package's contents into a
-   "Cache" object.  ([ServiceWorkers])
+   Service Worker's install event should receive a reference to the full
+   package, with a way to copy the package's contents into a Cache
+   object.  ([ServiceWorkers])
 
 4.  Non-goals
 
@@ -974,46 +973,46 @@ Table of Contents
               Burke, B., "HTTP Header for digital signatures", Work in
               Progress, Internet-Draft, draft-burke-content-signature-
               00, 7 March 2011, <https://datatracker.ietf.org/doc/html/
-              draft-burke-content-signature-00.txt>.
+              draft-burke-content-signature-00>.
 
    [I-D.cavage-http-signatures]
               Cavage, M. and M. Sporny, "Signing HTTP Messages", Work in
               Progress, Internet-Draft, draft-cavage-http-signatures-12,
               21 October 2019, <https://datatracker.ietf.org/doc/html/
-              draft-cavage-http-signatures-12.txt>.
+              draft-cavage-http-signatures-12>.
 
    [I-D.ietf-httpbis-cache-digest]
               Oku, K. and Y. Weiss, "Cache Digests for HTTP/2", Work in
               Progress, Internet-Draft, draft-ietf-httpbis-cache-digest-
               05, 2 July 2018, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-httpbis-cache-digest-05.txt>.
+              draft-ietf-httpbis-cache-digest-05>.
 
    [I-D.ietf-httpbis-http2-secondary-certs]
               Bishop, M., Sullivan, N., and M. Thomson, "Secondary
               Certificate Authentication in HTTP/2", Work in Progress,
               Internet-Draft, draft-ietf-httpbis-http2-secondary-certs-
               06, 14 May 2020, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-httpbis-http2-secondary-certs-06.txt>.
+              draft-ietf-httpbis-http2-secondary-certs-06>.
 
    [I-D.thomson-http-content-signature]
               Thomson, M., "Content-Signature Header Field for HTTP",
               Work in Progress, Internet-Draft, draft-thomson-http-
               content-signature-00, 2 July 2015,
               <https://datatracker.ietf.org/doc/html/draft-thomson-http-
-              content-signature-00.txt>.
+              content-signature-00>.
 
    [I-D.vkrasnov-h2-compression-dictionaries]
               Krasnov, V. and Y. Weiss, "Compression Dictionaries for
               HTTP/2", Work in Progress, Internet-Draft, draft-vkrasnov-
               h2-compression-dictionaries-03, 5 March 2018,
               <https://datatracker.ietf.org/doc/html/draft-vkrasnov-h2-
-              compression-dictionaries-03.txt>.
+              compression-dictionaries-03>.
 
    [I-D.yasskin-dispatch-web-packaging]
               Yasskin, J., "Web Packaging", Work in Progress, Internet-
               Draft, draft-yasskin-dispatch-web-packaging-00, 30 June
               2017, <https://datatracker.ietf.org/doc/html/draft-
-              yasskin-dispatch-web-packaging-00.txt>.
+              yasskin-dispatch-web-packaging-00>.
 
    [ISO28500] "WARC file format", ISO 28500:2017, 2017,
               <https://www.iso.org/standard/68004.html>.
@@ -1025,33 +1024,33 @@ Table of Contents
    [MHTML]    Palme, J., Hopmann, A., and N. Shelness, "MIME
               Encapsulation of Aggregate Documents, such as HTML
               (MHTML)", RFC 2557, DOI 10.17487/RFC2557, March 1999,
-              <https://datatracker.ietf.org/doc/html/rfc2557>.
+              <https://www.rfc-editor.org/rfc/rfc2557>.
 
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454,
               DOI 10.17487/RFC6454, December 2011,
-              <https://datatracker.ietf.org/doc/html/rfc6454>.
+              <https://www.rfc-editor.org/rfc/rfc6454>.
 
    [RFC6797]  Hodges, J., Jackson, C., and A. Barth, "HTTP Strict
               Transport Security (HSTS)", RFC 6797,
               DOI 10.17487/RFC6797, November 2012,
-              <https://datatracker.ietf.org/doc/html/rfc6797>.
+              <https://www.rfc-editor.org/rfc/rfc6797>.
 
    [RFC6962]  Laurie, B., Langley, A., and E. Kasper, "Certificate
               Transparency", RFC 6962, DOI 10.17487/RFC6962, June 2013,
-              <https://datatracker.ietf.org/doc/html/rfc6962>.
+              <https://www.rfc-editor.org/rfc/rfc6962>.
 
    [RFC7469]  Evans, C., Palmer, C., and R. Sleevi, "Public Key Pinning
               Extension for HTTP", RFC 7469, DOI 10.17487/RFC7469, April
-              2015, <https://datatracker.ietf.org/doc/html/rfc7469>.
+              2015, <https://www.rfc-editor.org/rfc/rfc7469>.
 
    [RFC7515]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web
               Signature (JWS)", RFC 7515, DOI 10.17487/RFC7515, May
-              2015, <https://datatracker.ietf.org/doc/html/rfc7515>.
+              2015, <https://www.rfc-editor.org/rfc/rfc7515>.
 
    [RFC7540]  Belshe, M., Peon, R., and M. Thomson, Ed., "Hypertext
               Transfer Protocol Version 2 (HTTP/2)", RFC 7540,
               DOI 10.17487/RFC7540, May 2015,
-              <https://datatracker.ietf.org/doc/html/rfc7540>.
+              <https://www.rfc-editor.org/rfc/rfc7540>.
 
    [ServiceWorkers]
               "Service Workers Nightly", W3C ED,
@@ -1076,5 +1075,4 @@ Author's Address
 
    Jeffrey Yasskin
    Google
-
    Email: jyasskin@chromium.org

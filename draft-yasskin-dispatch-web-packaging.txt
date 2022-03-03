@@ -4,8 +4,8 @@
 
 Network Working Group                                         J. Yasskin
 Internet-Draft                                                    Google
-Intended status: Standards Track                           13 April 2021
-Expires: 15 October 2021
+Intended status: Standards Track                            3 March 2022
+Expires: 4 September 2022
 
 
                              Web Packaging
@@ -43,11 +43,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 October 2021.
+   This Internet-Draft will expire on 4 September 2022.
 
 Copyright Notice
 
-   Copyright (c) 2021 IETF Trust and the persons identified as the
+   Copyright (c) 2022 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -55,9 +55,9 @@ Copyright Notice
    license-info) in effect on the date of publication of this document.
    Please review these documents carefully, as they describe your rights
    and restrictions with respect to this document.  Code Components
-   extracted from this document must include Simplified BSD License text
-   as described in Section 4.e of the Trust Legal Provisions and are
-   provided without warranty as described in the Simplified BSD License.
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
 
 Table of Contents
 
@@ -195,9 +195,9 @@ Table of Contents
    If the bytes don't match this group or these two CBOR items don't
    occupy exactly 18 bytes, parsing MUST fail.
 
-   Otherwise, continue as if the byte "length" bytes before the end of
-   the string were the beginning of the package, and the parser were a
-   from the beginning (Section 2.2.2) parser.
+   Otherwise, continue as if the byte length bytes before the end of the
+   string were the beginning of the package, and the parser were a from
+   the beginning (Section 2.2.2) parser.
 
 2.2.2.  From the beginning
 
@@ -214,29 +214,29 @@ Table of Contents
    or it is not a Canonical CBOR item (Section 3.9 of [CBOR]), parsing
    MUST fail.
 
-   Let _sections-start_ be the offset of the byte after the "section-
-   offsets" item.  For example, if "section-offsets" were 52 bytes long,
+   Let _sections-start_ be the offset of the byte after the section-
+   offsets item.  For example, if section-offsets were 52 bytes long,
    _sections-start_ would be 63.
 
    This specification defines two section names: "indexed-content" and
    "manifest".
 
-   If "section-offsets"["indexed-content"] is not present, parsing MUST
+   If section-offsets["indexed-content"] is not present, parsing MUST
    fail.
 
-   The parser MUST ignore unknown keys in the "section-offsets" map
+   The parser MUST ignore unknown keys in the section-offsets map
    because new sections may be defined in future specifications.
    // Do we need to mark critical section names?
    //
    // -- jyasskin
 
    Let _index_ be the result of parsing the bytes starting at offset
-   _sections-start_ + "section-offsets"["indexed-content"] using the
+   _sections-start_ + section-offsets["indexed-content"] using the
    instructions in Section 2.3.
 
-   If "section-offsets"["manifest"] is present, let _manifest_ be the
+   If section-offsets["manifest"] is present, let _manifest_ be the
    result of parsing the bytes starting at offset _sections-start_ +
-   "section-offsets"["manifest"] using the instructions in Section 2.4.
+   section-offsets["manifest"] using the instructions in Section 2.4.
 
    The parser MAY return a semantic package consisting of _index_, and,
    if initialized, _manifest_.
@@ -258,8 +258,8 @@ Table of Contents
    If the byte at _index-start_ is not 0x82 (the [CBOR] header for a
    2-element array), the parser MUST fail.
 
-   Load a CBOR item starting at _index-start_ + 1 as the "index" array
-   in the following CDDL:
+   Load a CBOR item starting at _index-start_ + 1 as the index array in
+   the following CDDL:
 
    index = [* [resource-key: http-headers,
                offset: uint,
@@ -271,48 +271,48 @@ Table of Contents
    If the item doesn't match this CDDL, or it is not a Canonical CBOR
    item (Section 3.9 of [CBOR]), the parser MUST fail.
 
-   Let _resources-start_ be the offset immediately after the "index"
-   item.  For example, if _index-start_ were 75 and the "index" item
-   were 105 bytes long, _resources-start_ would be 75+1+105=181. (1 for
-   the 0x82 array header.)
+   Let _resources-start_ be the offset immediately after the index item.
+   For example, if _index-start_ were 75 and the index item were 105
+   bytes long, _resources-start_ would be 75+1+105=181. (1 for the 0x82
+   array header.)
 
-   Decode all of the "resource-key"s using [HPACK], with an initially-
+   Decode all of the resource-keys using [HPACK], with an initially-
    empty dynamic table for each one.
    // This spec has different security constraints from the ones that
    // drove HPACK, so we may be able to do better with another
    // compression format.
    //
-   // -- jyasskin"resource-key"s are header lists ([HPACK],
-   Section 1.3), ordered lists of name-value pairs.
+   // -- jyasskinresource-keys are header lists ([HPACK], Section 1.3),
+   ordered lists of name-value pairs.
 
    The parser MUST fail if any of the following is true:
 
    1.  HPACK decoding encountered an error.
 
-   2.  Any "resource-key"'s first three headers are not named ":scheme",
+   2.  Any resource-key's first three headers are not named ":scheme",
        ":authority", and ":path", in that order.  Note that ":method" is
        intentionally omitted because only the GET method is meaningful.
 
    3.  Any of the pseudo-headers' values violates a requirement in
        Section 8.1.2.3 of [HTTP2].
 
-   4.  Any "resource-key" has a non-pseudo-header name that includes the
+   4.  Any resource-key has a non-pseudo-header name that includes the
        ":" character or is not lower-case ascii ([HTTP2],
        Section 8.1.2).
 
-   5.  Any two decoded "resource-key"s are the same.  Note that header
+   5.  Any two decoded resource-keys are the same.  Note that header
        lists with the same header fields in a different order are not
        the same.
 
-   Increment all "offset"s by _resources-start_.
+   Increment all offsets by _resources-start_.
 
-   Return the resulting "index", an array of decoded-resource-key,
+   Return the resulting index, an array of decoded-resource-key,
    adjusted-offset, and optional-length triples.
 
-   The optional "length" field in the index entries is redundant with
-   the length prefixes on the "response-headers" and "body" in the
-   content, but it can be used to issue Range requests [RFC7233] for
-   responses that appear late in the content.
+   The optional length field in the index entries is redundant with the
+   length prefixes on the response-headers and body in the content, but
+   it can be used to issue Range requests [RFC7233] for responses that
+   appear late in the content.
 
 2.4.  Parsing the manifest
 
@@ -330,8 +330,8 @@ Table of Contents
    To parse a manifest starting at _manifest-start_, a parser MUST do
    the following:
 
-   Load one CBOR item starting at _manifest-start_ as a "signed-
-   manifest" from the following CDDL:
+   Load one CBOR item starting at _manifest-start_ as a signed-manifest
+   from the following CDDL:
 
    signed-manifest = {
      manifest: manifest,
@@ -369,7 +369,7 @@ Table of Contents
    If the item doesn't match the CDDL or it's not a Canonical CBOR item
    (Section 3.9 of [CBOR]), parsing MUST fail.
 
-   Parse the elements of "certificates" as X.509 certificates within the
+   Parse the elements of certificates as X.509 certificates within the
    [RFC5280] profile.  If any certificate fails to parse, parsing MUST
    fail.
 
@@ -383,13 +383,13 @@ Table of Contents
 
    3.  A single 0 byte which serves as a separator.
 
-   4.  The bytes of the "manifest" CBOR item.
+   4.  The bytes of the manifest CBOR item.
 
    Let _signing-certificates_ be an empty array.
 
-   For each element _signature_ of "signatures":
+   For each element _signature_ of signatures:
 
-   1.  Let _certificate_ be "certificates"[_signature_["keyIndex"]].
+   1.  Let _certificate_ be certificates[_signature_["keyIndex"]].
 
    2.  The parser MUST define a partial function from public key types
        to signing algorithms, and this function must at the minimum
@@ -418,29 +418,29 @@ Table of Contents
        packagers can give new signature types to parsers that understand
        them.
 
-   Let _origin_ be "manifest"["metadata"]["origin"].
+   Let _origin_ be manifest["metadata"]["origin"].
 
    Iterate through _signing-certificates_ until one is found that has an
    identity ([RFC2818], Section 3.1) matching _origin_'s hostname, and
    that is trusted for serverAuth ([RFC5280], Section 4.2.1.12) using
-   paths built from elements of "certificates" or any other certificates
+   paths built from elements of certificates or any other certificates
    the parser is aware of.  If no such certificate is found, and the
    package is not already trusted as received from _origin_'s hostname,
    for example because it was received over a TLS connection to that
    host, then parsing MUST fail.
 
-   *TODO:* Process the "subpackages" item by fetching those manifests
-   via the index, and checking their signatures and dates/hashes,
+   *TODO:* Process the subpackages item by fetching those manifests via
+   the index, and checking their signatures and dates/hashes,
    recursively.
 
    The parsed manifest consists of the set of _signing-certificates_ and
-   the "manifest" CBOR item.  The items in "manifest"["metadata"] SHOULD
-   be interpreted as described in the [appmanifest] specification.
+   the manifest CBOR item.  The items in manifest["metadata"] SHOULD be
+   interpreted as described in the [appmanifest] specification.
 
 2.4.1.  Sub-packages
 
    A sub-package is represented by a Section 2.4 file looked up as a
-   Section 2.5 within the "indexed-content" section.  The sub-package's
+   Section 2.5 within the indexed-content section.  The sub-package's
    resources are not otherwise distinguished from the rest of the
    resources in the package.  Sub-packages can form an arbitrarily-deep
    tree.
@@ -483,7 +483,7 @@ Table of Contents
    Note that because the sub-package may include sub-sub-packages by
    date, the top package may need to explicitly list those sub-sub-
    packages' hashes in order to be completely constrained.  For example,
-   if "loginsdk.package" has subpackages of the form:
+   if loginsdk.package has subpackages of the form:
 
    [
      [32("https://other.example.com/helper.package"),
@@ -520,15 +520,15 @@ Table of Contents
    If the item doesn't match the CDDL or it's not a Canonical CBOR item
    (Section 3.9 of [CBOR]), parsing MUST fail.
 
-   Decode the "response-headers" field using [HPACK], with an initially-
-   empty dynamic table.  The decoded "response-headers" is a header list
+   Decode the response-headers field using [HPACK], with an initially-
+   empty dynamic table.  The decoded response-headers is a header list
    ([HPACK], Section 1.3), an ordered list of name-value pairs.
 
    The parser MUST fail if any of the following is true:
 
    1.  HPACK decoding encountered an error.
 
-   2.  The first header name within "response-headers" is not ":status",
+   2.  The first header name within response-headers is not ":status",
        or this pseudo-header's value violates a requirement in
        Section 8.1.2.3 of [HTTP2].
 
@@ -536,15 +536,15 @@ Table of Contents
        case ascii ([HTTP2], Section 8.1.2).
 
    4.  The _header-list_ contains any header names other than ":scheme",
-       ":authority", ":path", and either "response-headers" has no
-       "vary" header (Section 7.1.4 of [RFC7231]) or these header names
-       aren't listed in it.
+       ":authority", ":path", and either response-headers has no "vary"
+       header (Section 7.1.4 of [RFC7231]) or these header names aren't
+       listed in it.
 
    Let _origin_ be the Web Origin [RFC6454] of _header-list_'s ":scheme"
    and ":authority" headers.
 
    Let _resource-bytes_ be the result of encoding the array of [_header-
-   list_, "response-headers", "body"] as Canonical CBOR in the following
+   list_, response-headers, body] as Canonical CBOR in the following
    CDDL schema:
    // This step would be inside the manifest-only block, but then the
    // code block is rendered out-of-order.
@@ -576,25 +576,25 @@ Table of Contents
        _origin_, found by searching through _manifest_'s subpackages for
        a matching origin.
 
-   2.  Let _alg_ be one of the "hash-algorithm"s within _origin-
-       manifest_. The parser SHOULD select the most collision-resistant
-       hash algorithm.  If the parser also implements [SRI], it SHOULD
-       use the same order as its "getPrioritizedHashFunction()"
+   2.  Let _alg_ be one of the hash-algorithms within _origin-manifest_.
+       The parser SHOULD select the most collision-resistant hash
+       algorithm.  If the parser also implements [SRI], it SHOULD use
+       the same order as its getPrioritizedHashFunction()
        implementation.
 
    3.  If the digest of _resource-bytes_ using _alg_ does not appear in
-       the _origin-manifest_'s "resource-hashes"[_alg_] array, the
-       parser MUST fail.
+       the _origin-manifest_'s resource-hashes[_alg_] array, the parser
+       MUST fail.
 
-   Return the (decoded "response-headers", "body") pair.
+   Return the (decoded response-headers, body) pair.
 
 3.  Guidelines for package authors
 
    Packages SHOULD consist of a single Canonical CBOR item matching the
-   "webpackage" CDDL rule in Section 2.2.
+   webpackage CDDL rule in Section 2.2.
 
-   Every resource's hash SHOULD appear in every array within "resource-
-   hashes": otherwise the set of valid resources will depend on the
+   Every resource's hash SHOULD appear in every array within resource-
+   hashes: otherwise the set of valid resources will depend on the
    parser's choice of preferred hash algorithm.
 
 4.  Security Considerations
@@ -700,58 +700,57 @@ Table of Contents
 
    [CBOR]     Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
-              October 2013,
-              <https://datatracker.ietf.org/doc/html/rfc7049>.
+              October 2013, <https://www.rfc-editor.org/rfc/rfc7049>.
 
    [CDDL]     Birkholz, H., Vigano, C., and C. Bormann, "Concise data
               definition language (CDDL): a notational convention to
               express CBOR data structures", Work in Progress, Internet-
               Draft, draft-greevenbosch-appsawg-cbor-cddl-11, 3 July
               2017, <https://datatracker.ietf.org/doc/html/draft-
-              greevenbosch-appsawg-cbor-cddl-11.txt>.
+              greevenbosch-appsawg-cbor-cddl-11>.
 
    [HPACK]    Peon, R. and H. Ruellan, "HPACK: Header Compression for
               HTTP/2", RFC 7541, DOI 10.17487/RFC7541, May 2015,
-              <https://datatracker.ietf.org/doc/html/rfc7541>.
+              <https://www.rfc-editor.org/rfc/rfc7541>.
 
    [HTTP2]    Belshe, M., Peon, R., and M. Thomson, Ed., "Hypertext
               Transfer Protocol Version 2 (HTTP/2)", RFC 7540,
               DOI 10.17487/RFC7540, May 2015,
-              <https://datatracker.ietf.org/doc/html/rfc7540>.
+              <https://www.rfc-editor.org/rfc/rfc7540>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
-              <https://datatracker.ietf.org/doc/html/rfc2119>.
+              <https://www.rfc-editor.org/rfc/rfc2119>.
 
    [RFC2818]  Rescorla, E., "HTTP Over TLS", RFC 2818,
               DOI 10.17487/RFC2818, May 2000,
-              <https://datatracker.ietf.org/doc/html/rfc2818>.
+              <https://www.rfc-editor.org/rfc/rfc2818>.
 
    [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
               Housley, R., and W. Polk, "Internet X.509 Public Key
               Infrastructure Certificate and Certificate Revocation List
               (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
-              <https://datatracker.ietf.org/doc/html/rfc5280>.
+              <https://www.rfc-editor.org/rfc/rfc5280>.
 
    [RFC6454]  Barth, A., "The Web Origin Concept", RFC 6454,
               DOI 10.17487/RFC6454, December 2011,
-              <https://datatracker.ietf.org/doc/html/rfc6454>.
+              <https://www.rfc-editor.org/rfc/rfc6454>.
 
    [RFC6960]  Santesson, S., Myers, M., Ankney, R., Malpani, A.,
               Galperin, S., and C. Adams, "X.509 Internet Public Key
               Infrastructure Online Certificate Status Protocol - OCSP",
               RFC 6960, DOI 10.17487/RFC6960, June 2013,
-              <https://datatracker.ietf.org/doc/html/rfc6960>.
+              <https://www.rfc-editor.org/rfc/rfc6960>.
 
    [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Semantics and Content", RFC 7231,
               DOI 10.17487/RFC7231, June 2014,
-              <https://datatracker.ietf.org/doc/html/rfc7231>.
+              <https://www.rfc-editor.org/rfc/rfc7231>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://datatracker.ietf.org/doc/html/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
    [SRI]      Akhawe, D., Braun, F., Marier, F., and J. Weinberger,
               "Subresource Integrity", World Wide Web Consortium
@@ -762,26 +761,26 @@ Table of Contents
               Version 1.3", Work in Progress, Internet-Draft, draft-
               ietf-tls-tls13-28, 20 March 2018,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              tls13-28.txt>.
+              tls13-28>.
 
 6.2.  Informative References
 
    [I-D.yasskin-wpack-use-cases]
               Yasskin, J., "Use Cases and Requirements for Web
               Packages", Work in Progress, Internet-Draft, draft-
-              yasskin-wpack-use-cases-01, 27 July 2020,
+              yasskin-wpack-use-cases-02, 13 April 2021,
               <https://datatracker.ietf.org/doc/html/draft-yasskin-
-              wpack-use-cases-01.txt>.
+              wpack-use-cases-02>.
 
    [RFC6838]  Freed, N., Klensin, J., and T. Hansen, "Media Type
               Specifications and Registration Procedures", BCP 13,
               RFC 6838, DOI 10.17487/RFC6838, January 2013,
-              <https://datatracker.ietf.org/doc/html/rfc6838>.
+              <https://www.rfc-editor.org/rfc/rfc6838>.
 
    [RFC7233]  Fielding, R., Ed., Lafon, Y., Ed., and J. Reschke, Ed.,
               "Hypertext Transfer Protocol (HTTP/1.1): Range Requests",
               RFC 7233, DOI 10.17487/RFC7233, June 2014,
-              <https://datatracker.ietf.org/doc/html/rfc7233>.
+              <https://www.rfc-editor.org/rfc/rfc7233>.
 
    [ServiceWorkers]
               Russell, A., Song, J., Archibald, J., and M.
@@ -799,5 +798,4 @@ Author's Address
 
    Jeffrey Yasskin
    Google
-
    Email: jyasskin@chromium.org
