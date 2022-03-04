@@ -4,8 +4,8 @@
 
 Network Working Group                                         J. Yasskin
 Internet-Draft                                                    Google
-Intended status: Informational                              3 March 2022
-Expires: 4 September 2022
+Intended status: Informational                              4 March 2022
+Expires: 5 September 2022
 
 
               Use Cases and Requirements for Web Packages
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2022.
+   This Internet-Draft will expire on 5 September 2022.
 
 Copyright Notice
 
