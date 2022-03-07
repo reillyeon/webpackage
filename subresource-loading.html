@@ -1,12 +1,12 @@
 <!doctype html><html lang="en">
  <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-  <title>Subresource Loading with WebBundles</title>
+  <title>Subresource Loading with Web Bundles</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/webpackage/subresource-loading.html" rel="canonical">
-  <meta content="bb47d16fe0c76f3678a548165cd75e1bbd569363" name="document-revision">
+  <meta content="aef4300806df29012b3d744d958fcdd278e9fa46" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -207,6 +207,47 @@ figcaption {
 figcaption:not(.no-marker)::before {
     content: "Figure " counter(figure) " ";
 }</style>
+<style>/* style-dfn-panel */
+
+:root {
+    --dfnpanel-bg: #ddd;
+    --dfnpanel-text: var(--text);
+}
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    height: auto;
+    width: -webkit-fit-content;
+    width: fit-content;
+    max-width: 300px;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--dfnpanel-bg);
+    color: var(--dfnpanel-text);
+    border: outset 0.2em;
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0; }
+.dfn-panel li { list-style: inside; }
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
+
+.dfn-paneled { cursor: pointer; }
+</style>
 <style>/* style-issues */
 
 a[href].issue-return {
@@ -399,24 +440,31 @@ dfn > a.self-link::before      { content: "#"; }
         --selflink-hover-text: white;
     }
 }
-</style>
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfnpanel-bg: #222;
+        --dfnpanel-text: var(--text);
+    }
+}</style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
-   <h1 class="p-name no-ref" id="title">Subresource Loading with WebBundles</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-03-04">4 March 2022</time></p>
+   <h1 class="p-name no-ref" id="title">Subresource Loading with Web Bundles</h1>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-03-07">7 March 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
      <dd><a class="u-url" href="https://wicg.github.io/webpackage/subresource-loading.html">https://wicg.github.io/webpackage/subresource-loading.html</a>
      <dt>Issue Tracking:
      <dd><a href="https://github.com/WICG/webpackage/issues/">GitHub</a>
+     <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editor:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:hayato@google.com">Hayato Ito</a> (<a class="p-org org" href="https://google.com/">Google Inc.</a>)
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2022 the Contributors to the Subresource Loading with WebBundles Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2022 the Contributors to the Subresource Loading with Web Bundles Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
 A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available. </p>
    <hr title="Separator for header">
   </div>
@@ -440,6 +488,21 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
     <li><a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
+    <li><a href="#structures"><span class="secno">2</span> <span class="content">Structures</span></a>
+    <li><a href="#html-monkeypatches"><span class="secno">3</span> <span class="content">HTML monkeypatches</span></a>
+    <li>
+     <a href="#fetch-monkeypatches"><span class="secno">4</span> <span class="content">Fetch monkeypatches</span></a>
+     <ol class="toc">
+      <li><a href="#monkeypatch-http-network-or-cache-fetch"><span class="secno">4.1</span> <span class="content">Monkeypatch HTTP-network-or-cache fetch</span></a>
+     </ol>
+    <li>
+     <a href="#algorithms"><span class="secno">5</span> <span class="content">Algorithms</span></a>
+     <ol class="toc">
+      <li><a href="#fetch-web-bundle"><span class="secno">5.1</span> <span class="content">Fetch web bundle</span></a>
+      <li><a href="#fetch-from-web-bundle"><span class="secno">5.2</span> <span class="content">Fetch from web bundle</span></a>
+      <li><a href="#match-url-with-web-bundle"><span class="secno">5.3</span> <span class="content">Match url with web bundle</span></a>
+      <li><a href="#get-response-from-web-bundle"><span class="secno">5.4</span> <span class="content">Get response from web bundle</span></a>
+     </ol>
     <li>
      <a href="#w3c-conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ol class="toc">
@@ -447,25 +510,169 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#w3c-conformant-algorithms"><span class="secno"></span> <span class="content">Conformant Algorithms</span></a>
      </ol>
     <li>
+     <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
+     <ol class="toc">
+      <li><a href="#index-defined-here"><span class="secno"></span> <span class="content">Terms defined by this specification</span></a>
+      <li><a href="#index-defined-elsewhere"><span class="secno"></span> <span class="content">Terms defined by reference</span></a>
+     </ol>
+    <li>
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
      <ol class="toc">
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
       <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
      </ol>
+    <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
    </ol>
   </nav>
   <main>
-   <section class="non-normative">
-    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
-    <p><em>This section is non-normative.</em></p>
-    <p>The Subresource Loading with Web Bundles specification describes a way to load a
+   <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
+   <p><em>This section is non-normative.</em></p>
+   <p>The Subresource Loading with Web Bundles specification describes a way to load a
 large number of resources efficiently using a format that allows multiple
 resources to be bundled, <a href="https://web.dev/web-bundles/">Web Bundles</a>. This
 specification describes how web browsers load those resources. It is expressed
 as several monkeypatches to the <a data-link-type="biblio" href="#biblio-html">[HTML]</a> and <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> specification which call
 algorithms defined here.</p>
-    <p class="note" role="note"> This specification is under construct. See <a href="https://github.com/WICG/webpackage/issues/708">#708</a>. </p>
-   </section>
+   <p class="note" role="note"><span>Note:</span> This specification is under construction. See <a href="https://github.com/WICG/webpackage/issues/708">#708</a>.</p>
+   <h2 class="heading settled" data-level="2" id="structures"><span class="secno">2. </span><span class="content">Structures</span><a class="self-link" href="#structures"></a></h2>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fetched-web-bundle">fetched web bundle</dfn> is a representation of a web bundle format
+defined in <a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-responses-latest">[draft-ietf-wpack-bundled-responses-latest]</a>.</p>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="bundle-rule">bundle rule</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item">items</a>:</p>
+   <ul>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-source">source</dfn>, a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URL</a>.</p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-credentials">credentials</dfn>, a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-mode" id="ref-for-concept-request-mode">mode</a>.</p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-resources">resources</dfn>, a list of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URLs</a>.</p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-scopes">scopes</dfn>, a list of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URLs</a>.</p>
+   </ul>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="web-bundle">web bundle</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct①">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item①">items</a>:</p>
+   <ul>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="web bundle" data-dfn-type="dfn" data-noexport id="web-bundle-fetched-bundle">fetched bundle</dfn>, a <a data-link-type="dfn" href="#fetched-web-bundle" id="ref-for-fetched-web-bundle">fetched web bundle</a> or null.</p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="web bundle" data-dfn-type="dfn" data-noexport id="web-bundle-rule">rule</dfn>, a <a data-link-type="dfn" href="#bundle-rule" id="ref-for-bundle-rule">bundle rule</a>.</p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="web bundle" data-dfn-type="dfn" data-noexport id="web-bundle-state">state</dfn>, an internal state which is "fetching",
+"fetched", or "failed". Initially "fetching".</p>
+   </ul>
+   <p>A <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-noexport id="document-web-bundle-list">web bundle list</dfn>, which is a list of <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle">web bundles</a>.</p>
+   <h2 class="heading settled" data-level="3" id="html-monkeypatches"><span class="secno">3. </span><span class="content">HTML monkeypatches</span><a class="self-link" href="#html-monkeypatches"></a></h2>
+   <p class="note" role="note"><span>Note:</span> TODO. This section uses <a data-link-type="dfn" href="#concept-fetch-web-bundle" id="ref-for-concept-fetch-web-bundle">fetch web bundle</a>.</p>
+   <h2 class="heading settled" data-level="4" id="fetch-monkeypatches"><span class="secno">4. </span><span class="content">Fetch monkeypatches</span><a class="self-link" href="#fetch-monkeypatches"></a></h2>
+   <h3 class="heading settled" data-level="4.1" id="monkeypatch-http-network-or-cache-fetch"><span class="secno">4.1. </span><span class="content">Monkeypatch HTTP-network-or-cache fetch</span><a class="self-link" href="#monkeypatch-http-network-or-cache-fetch"></a></h3>
+   <p>In <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-http-network-or-cache-fetch" id="ref-for-concept-http-network-or-cache-fetch">HTTP-network-or-cache fetch</a>, before</p>
+   <blockquote>
+    <p>8.22. Set httpCache to the result of determining the HTTP cache partition,
+given <var>httpRequest</var>.</p>
+   </blockquote>
+   <p>add the following steps:</p>
+   <ol start="22">
+    <li data-md>
+     <p>Set the <var>response</var> to the result of <a data-link-type="dfn" href="#concept-fetch-from-web-bundle" id="ref-for-concept-fetch-from-web-bundle">fetch from web bundle</a>, given <var>httpRequest</var>.</p>
+     <ol>
+      <li data-md>
+       <p>If <var>response</var> is <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, return <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error①">network error</a>.</p>
+      <li data-md>
+       <p>If <var>response</var> is non-null, skip the steps 8.22-8.24 and goto the step 9.</p>
+       <p class="note" role="note"><span>Note:</span> That means a subresource from a webbundle never interacts with
+ HttpCache. We plan to support HttpCache as a feature enhancement in the
+ future.</p>
+     </ol>
+   </ol>
+   <h2 class="heading settled" data-level="5" id="algorithms"><span class="secno">5. </span><span class="content">Algorithms</span><a class="self-link" href="#algorithms"></a></h2>
+   <h3 class="heading settled" data-level="5.1" id="fetch-web-bundle"><span class="secno">5.1. </span><span class="content">Fetch web bundle</span><a class="self-link" href="#fetch-web-bundle"></a></h3>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-fetch-web-bundle">fetch web bundle</dfn> given <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle①">web
+bundle</a> <var>web bundle</var> and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetch-params" id="ref-for-fetch-params">fetch params</a> <var>fetch params</var>:</p>
+   <ol>
+    <li data-md>
+     <p class="assertion">Assert: <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-state" id="ref-for-web-bundle-state">state</a> is "fetching".</p>
+    <li data-md>
+     <p>Let <var>request</var> be <var>fetch params</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a>.</p>
+    <li data-md>
+     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a> to <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-source" id="ref-for-bundle-rule-source">source</a>.</p>
+     <p class="note" role="note"><span>Note:</span> Source URL is resolved on document’s base URL.</p>
+    <li data-md>
+     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination">destination</a> to "webbundle",</p>
+    <li data-md>
+     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-mode" id="ref-for-concept-request-mode①">mode</a> to "cors",</p>
+    <li data-md>
+     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode" id="ref-for-concept-request-credentials-mode">credentials mode</a> to <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule①">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-credentials" id="ref-for-bundle-rule-credentials">credentials</a>.</p>
+    <li data-md>
+     <p>Append a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header" id="ref-for-concept-header">header</a>, a tuple of ("Accept", "application/webbundle;v=b2"), to <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list">header list</a>.</p>
+     <p class="note" role="note"><span>Note:</span> The final <a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-responses-latest">[draft-ietf-wpack-bundled-responses-latest]</a> will use a
+ version of <code>1</code>, but this specification tracks what’s actually implemented in
+ browsers, which still uses draft versions.</p>
+    <li data-md>
+     <p>Let <var>response</var> be the result of running <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-http-network-or-cache-fetch" id="ref-for-concept-http-network-or-cache-fetch①">HTTP-network-or-cache
+ fetch</a> given <var>fetch params</var>.</p>
+     <p class="note" role="note"><span>Note:</span> Chromium’s current implementation doesn’t allow a <em>nested bundle</em>. A
+ Web bundle is never fetched from other web bundles.</p>
+    <li data-md>
+     <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is 200,</p>
+     <ol>
+      <li data-md>
+       <p>Set <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-fetched-bundle" id="ref-for-web-bundle-fetched-bundle">fetched bundle</a> to the result of parsing <var>response</var>’s body (<a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-responses-latest">[draft-ietf-wpack-bundled-responses-latest]</a>) and <var>web
+  bundle</var>’s <a data-link-type="dfn" href="#web-bundle-state" id="ref-for-web-bundle-state①">state</a> be "fetched". If parsing fails, or any
+  other conformance is violated, set <a data-link-type="dfn" href="#web-bundle-fetched-bundle" id="ref-for-web-bundle-fetched-bundle①">fetched bundle</a> to null
+  and <a data-link-type="dfn" href="#web-bundle-state" id="ref-for-web-bundle-state②">state</a> to "failed".</p>
+       <p class="note" role="note"><span>Note:</span> In parsing, Chromium’s experimental implementation only accepts "b2"
+  as a web bundle format version number
+  (<a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-responses-latest">[draft-ietf-wpack-bundled-responses-latest]</a>).</p>
+     </ol>
+    <li data-md>
+     <p>Otherwise, set <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-state" id="ref-for-web-bundle-state③">state</a> to "failed".</p>
+   </ol>
+   <h3 class="heading settled" data-level="5.2" id="fetch-from-web-bundle"><span class="secno">5.2. </span><span class="content">Fetch from web bundle</span><a class="self-link" href="#fetch-from-web-bundle"></a></h3>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-fetch-from-web-bundle">fetch from web bundle</dfn> given <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①">request</a> <var>httpRequest</var>:</p>
+   <ol>
+    <li data-md>
+     <p>For each <var>web bundle</var> of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document">document</a>'s <a data-link-type="dfn" href="#document-web-bundle-list" id="ref-for-document-web-bundle-list">web bundle list</a>:</p>
+     <ol>
+      <li data-md>
+       <p>If the result of running <a data-link-type="dfn" href="#concept-match-url-with-web-bundle" id="ref-for-concept-match-url-with-web-bundle">match url with web bundle</a> given <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">url</a> and <var>web bundle</var> is true:</p>
+       <ol>
+        <li data-md>
+         <p>Let <var>response</var> be the result of <a data-link-type="dfn" href="#concept-get-response-from-web-bundle" id="ref-for-concept-get-response-from-web-bundle">get response from web bundle</a> given <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url②">url</a> and <var>web bundle</var>.</p>
+        <li data-md>
+         <p>If <var>response</var> is null, return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error②">network error</a>.</p>
+         <p class="note" role="note"><span>Note:</span> This means a browser does not fallback to fetch a subresource
+ from network.</p>
+        <li data-md>
+         <p>Otherwise, return <var>response</var>.</p>
+       </ol>
+     </ol>
+    <li data-md>
+     <p>Return null.</p>
+   </ol>
+   <h3 class="heading settled" data-level="5.3" id="match-url-with-web-bundle"><span class="secno">5.3. </span><span class="content">Match url with web bundle</span><a class="self-link" href="#match-url-with-web-bundle"></a></h3>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-match-url-with-web-bundle">match url with web bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">url</a> <var>url</var> and <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle②">web bundle</a> <var>web bundle</var>:</p>
+   <ol>
+    <li data-md>
+     <p>If <var>url</var> doesn’t meet a path restriction rule, given <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule②">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-source" id="ref-for-bundle-rule-source①">source</a>, then return false.</p>
+     <p class="issue" id="issue-3afe47ae"><a class="self-link" href="#issue-3afe47ae"></a> Clarify path restriction rule in algorithm.</p>
+    <li data-md>
+     <p>If <var>url</var> matches any of <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule③">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-resources" id="ref-for-bundle-rule-resources">resources</a>, then return true.</p>
+    <li data-md>
+     <p>If <var>url</var>’s prefix matches any of <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule④">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes">scopes</a>, then return true.</p>
+    <li data-md>
+     <p>Otherwise, return false.</p>
+   </ol>
+   <h3 class="heading settled" data-level="5.4" id="get-response-from-web-bundle"><span class="secno">5.4. </span><span class="content">Get response from web bundle</span><a class="self-link" href="#get-response-from-web-bundle"></a></h3>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="get response from web bundle" data-noexport id="concept-get-response-from-web-bundle">get response from web
+bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url④">url</a> <var>url</var> and <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle③">web bundle</a> <var>web bundle</var>:</p>
+   <ol>
+    <li data-md>
+     <p>If <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-state" id="ref-for-web-bundle-state④">state</a> is "fetching", await until <a data-link-type="dfn" href="#web-bundle-state" id="ref-for-web-bundle-state⑤">state</a> becomes "fetched" or "failed" asynchronously.</p>
+    <li data-md>
+     <p>If <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-state" id="ref-for-web-bundle-state⑥">state</a> is "failed", return null.</p>
+    <li data-md>
+     <p class="assertion">Assert: <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-fetched-bundle" id="ref-for-web-bundle-fetched-bundle②">fetched bundle</a> is non-null.</p>
+    <li data-md>
+     <p>Returns <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> from <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-fetched-bundle" id="ref-for-web-bundle-fetched-bundle③">fetched bundle</a> given <var>url</var> (<a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-responses-latest">[draft-ietf-wpack-bundled-responses-latest]</a>). If a representation of <var>url</var> is not found in <a data-link-type="dfn" href="#web-bundle-fetched-bundle" id="ref-for-web-bundle-fetched-bundle④">fetched bundle</a>, return null.</p>
+   </ol>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
@@ -509,16 +716,345 @@ algorithms defined here.</p>
     Implementers are encouraged to optimize. </p>
   </div>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
+  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <ul class="index">
+   <li><a href="#bundle-rule">bundle rule</a><span>, in § 2</span>
+   <li><a href="#bundle-rule-credentials">credentials</a><span>, in § 2</span>
+   <li><a href="#web-bundle-fetched-bundle">fetched bundle</a><span>, in § 2</span>
+   <li><a href="#fetched-web-bundle">fetched web bundle</a><span>, in § 2</span>
+   <li><a href="#concept-fetch-from-web-bundle">fetch from web bundle</a><span>, in § 5.2</span>
+   <li><a href="#concept-fetch-web-bundle">fetch web bundle</a><span>, in § 5.1</span>
+   <li><a href="#concept-get-response-from-web-bundle">get response from web bundle</a><span>, in § 5.4</span>
+   <li><a href="#concept-match-url-with-web-bundle">match url with web bundle</a><span>, in § 5.3</span>
+   <li><a href="#bundle-rule-resources">resources</a><span>, in § 2</span>
+   <li><a href="#web-bundle-rule">rule</a><span>, in § 2</span>
+   <li><a href="#bundle-rule-scopes">scopes</a><span>, in § 2</span>
+   <li><a href="#bundle-rule-source">source</a><span>, in § 2</span>
+   <li><a href="#web-bundle-state">state</a><span>, in § 2</span>
+   <li><a href="#web-bundle">web bundle</a><span>, in § 2</span>
+   <li><a href="#document-web-bundle-list">web bundle list</a><span>, in § 2</span>
+  </ul>
+  <aside class="dfn-panel" data-for="term-for-document">
+   <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-document">2. Structures</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-document">
+   <a href="https://dom.spec.whatwg.org/#concept-document">https://dom.spec.whatwg.org/#concept-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-document">5.2. Fetch from web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-credentials-mode">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode">https://fetch.spec.whatwg.org/#concept-request-credentials-mode</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-credentials-mode">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-destination">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-destination">https://fetch.spec.whatwg.org/#concept-request-destination</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-destination">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-fetch-params">
+   <a href="https://fetch.spec.whatwg.org/#fetch-params">https://fetch.spec.whatwg.org/#fetch-params</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-fetch-params">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-header">
+   <a href="https://fetch.spec.whatwg.org/#concept-header">https://fetch.spec.whatwg.org/#concept-header</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-header">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-header-list">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-header-list">https://fetch.spec.whatwg.org/#concept-request-header-list</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-header-list">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-http-network-or-cache-fetch">
+   <a href="https://fetch.spec.whatwg.org/#concept-http-network-or-cache-fetch">https://fetch.spec.whatwg.org/#concept-http-network-or-cache-fetch</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-http-network-or-cache-fetch">4.1. Monkeypatch HTTP-network-or-cache fetch</a>
+    <li><a href="#ref-for-concept-http-network-or-cache-fetch①">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-mode">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-mode">https://fetch.spec.whatwg.org/#concept-request-mode</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-mode">2. Structures</a>
+    <li><a href="#ref-for-concept-request-mode①">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-network-error">
+   <a href="https://fetch.spec.whatwg.org/#concept-network-error">https://fetch.spec.whatwg.org/#concept-network-error</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-network-error">4.1. Monkeypatch HTTP-network-or-cache fetch</a> <a href="#ref-for-concept-network-error①">(2)</a>
+    <li><a href="#ref-for-concept-network-error②">5.2. Fetch from web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request">
+   <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request">5.1. Fetch web bundle</a>
+    <li><a href="#ref-for-concept-request①">5.2. Fetch from web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-response">
+   <a href="https://fetch.spec.whatwg.org/#concept-response">https://fetch.spec.whatwg.org/#concept-response</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-response">5.4. Get response from web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-response-status">
+   <a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-response-status">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-url">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-url">5.1. Fetch web bundle</a>
+    <li><a href="#ref-for-concept-request-url①">5.2. Fetch from web bundle</a> <a href="#ref-for-concept-request-url②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-struct-item">
+   <a href="https://infra.spec.whatwg.org/#struct-item">https://infra.spec.whatwg.org/#struct-item</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-struct-item">2. Structures</a> <a href="#ref-for-struct-item①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-struct">
+   <a href="https://infra.spec.whatwg.org/#struct">https://infra.spec.whatwg.org/#struct</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-struct">2. Structures</a> <a href="#ref-for-struct①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url">
+   <a href="https://url.spec.whatwg.org/#concept-url">https://url.spec.whatwg.org/#concept-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url">2. Structures</a> <a href="#ref-for-concept-url①">(2)</a> <a href="#ref-for-concept-url②">(3)</a>
+    <li><a href="#ref-for-concept-url③">5.3. Match url with web bundle</a>
+    <li><a href="#ref-for-concept-url④">5.4. Get response from web bundle</a>
+   </ul>
+  </aside>
+  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <ul class="index">
+   <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-document">Document</span>
+     <li><span class="dfn-paneled" id="term-for-concept-document">document</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[FETCH]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-request-credentials-mode">credentials mode</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-destination">destination</span>
+     <li><span class="dfn-paneled" id="term-for-fetch-params">fetch params</span>
+     <li><span class="dfn-paneled" id="term-for-concept-header">header</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-header-list">header list</span>
+     <li><span class="dfn-paneled" id="term-for-concept-http-network-or-cache-fetch">http-network-or-cache fetch</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-mode">mode</span>
+     <li><span class="dfn-paneled" id="term-for-concept-network-error">network error</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
+     <li><span class="dfn-paneled" id="term-for-concept-response">response</span>
+     <li><span class="dfn-paneled" id="term-for-concept-response-status">status</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-url">url</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[INFRA]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-struct-item">item</span>
+     <li><span class="dfn-paneled" id="term-for-struct">struct</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[URL]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-url">url</span>
+    </ul>
+  </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
+   <dt id="biblio-fetch">[FETCH]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-infra">[INFRA]
+   <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dt id="biblio-url">[URL]
+   <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
-   <dt id="biblio-fetch">[FETCH]
-   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-draft-ietf-wpack-bundled-responses-latest">[DRAFT-IETF-WPACK-BUNDLED-RESPONSES-LATEST]
+   <dd><a href="https://wpack-wg.github.io/bundled-responses/draft-ietf-wpack-bundled-responses.html"><cite>Web Bundles</cite></a>. URL: <a href="https://wpack-wg.github.io/bundled-responses/draft-ietf-wpack-bundled-responses.html">https://wpack-wg.github.io/bundled-responses/draft-ietf-wpack-bundled-responses.html</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
   </dl>
+  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <div style="counter-reset:issue">
+   <div class="issue"> Clarify path restriction rule in algorithm. <a class="issue-return" href="#issue-3afe47ae" title="Jump to section">↵</a></div>
+  </div>
+  <aside class="dfn-panel" data-for="fetched-web-bundle">
+   <b><a href="#fetched-web-bundle">#fetched-web-bundle</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-fetched-web-bundle">2. Structures</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="bundle-rule">
+   <b><a href="#bundle-rule">#bundle-rule</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-bundle-rule">2. Structures</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="bundle-rule-source">
+   <b><a href="#bundle-rule-source">#bundle-rule-source</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-bundle-rule-source">5.1. Fetch web bundle</a>
+    <li><a href="#ref-for-bundle-rule-source①">5.3. Match url with web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="bundle-rule-credentials">
+   <b><a href="#bundle-rule-credentials">#bundle-rule-credentials</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-bundle-rule-credentials">5.1. Fetch web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="bundle-rule-resources">
+   <b><a href="#bundle-rule-resources">#bundle-rule-resources</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-bundle-rule-resources">5.3. Match url with web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="bundle-rule-scopes">
+   <b><a href="#bundle-rule-scopes">#bundle-rule-scopes</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-bundle-rule-scopes">5.3. Match url with web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="web-bundle">
+   <b><a href="#web-bundle">#web-bundle</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-web-bundle">2. Structures</a>
+    <li><a href="#ref-for-web-bundle①">5.1. Fetch web bundle</a>
+    <li><a href="#ref-for-web-bundle②">5.3. Match url with web bundle</a>
+    <li><a href="#ref-for-web-bundle③">5.4. Get response from web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="web-bundle-fetched-bundle">
+   <b><a href="#web-bundle-fetched-bundle">#web-bundle-fetched-bundle</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-web-bundle-fetched-bundle">5.1. Fetch web bundle</a> <a href="#ref-for-web-bundle-fetched-bundle①">(2)</a>
+    <li><a href="#ref-for-web-bundle-fetched-bundle②">5.4. Get response from web bundle</a> <a href="#ref-for-web-bundle-fetched-bundle③">(2)</a> <a href="#ref-for-web-bundle-fetched-bundle④">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="web-bundle-rule">
+   <b><a href="#web-bundle-rule">#web-bundle-rule</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-web-bundle-rule">5.1. Fetch web bundle</a> <a href="#ref-for-web-bundle-rule①">(2)</a>
+    <li><a href="#ref-for-web-bundle-rule②">5.3. Match url with web bundle</a> <a href="#ref-for-web-bundle-rule③">(2)</a> <a href="#ref-for-web-bundle-rule④">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="web-bundle-state">
+   <b><a href="#web-bundle-state">#web-bundle-state</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-web-bundle-state">5.1. Fetch web bundle</a> <a href="#ref-for-web-bundle-state①">(2)</a> <a href="#ref-for-web-bundle-state②">(3)</a> <a href="#ref-for-web-bundle-state③">(4)</a>
+    <li><a href="#ref-for-web-bundle-state④">5.4. Get response from web bundle</a> <a href="#ref-for-web-bundle-state⑤">(2)</a> <a href="#ref-for-web-bundle-state⑥">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="document-web-bundle-list">
+   <b><a href="#document-web-bundle-list">#document-web-bundle-list</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-document-web-bundle-list">5.2. Fetch from web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="concept-fetch-web-bundle">
+   <b><a href="#concept-fetch-web-bundle">#concept-fetch-web-bundle</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-fetch-web-bundle">3. HTML monkeypatches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="concept-fetch-from-web-bundle">
+   <b><a href="#concept-fetch-from-web-bundle">#concept-fetch-from-web-bundle</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-fetch-from-web-bundle">4.1. Monkeypatch HTTP-network-or-cache fetch</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="concept-match-url-with-web-bundle">
+   <b><a href="#concept-match-url-with-web-bundle">#concept-match-url-with-web-bundle</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-match-url-with-web-bundle">5.2. Fetch from web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="concept-get-response-from-web-bundle">
+   <b><a href="#concept-get-response-from-web-bundle">#concept-get-response-from-web-bundle</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-get-response-from-web-bundle">5.2. Fetch from web bundle</a>
+   </ul>
+  </aside>
+<script>/* script-dfn-panel */
+
+document.body.addEventListener("click", function(e) {
+    var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
+    // Find the dfn element or panel, if any, that was clicked on.
+    var el = e.target;
+    var target;
+    var hitALink = false;
+    while(el.parentElement) {
+        if(el.tagName == "A") {
+            // Clicking on a link in a <dfn> shouldn't summon the panel
+            hitALink = true;
+        }
+        if(el.classList.contains("dfn-paneled")) {
+            target = "dfn";
+            break;
+        }
+        if(el.classList.contains("dfn-panel")) {
+            target = "dfn-panel";
+            break;
+        }
+        el = el.parentElement;
+    }
+    if(target != "dfn-panel") {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
+            el.classList.remove("on");
+            el.classList.remove("activated");
+        });
+    }
+    if(target == "dfn" && !hitALink) {
+        // open the panel
+        var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
+        if(dfnPanel) {
+            dfnPanel.classList.add("on");
+            var rect = el.getBoundingClientRect();
+            dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
+            dfnPanel.style.top = window.scrollY + rect.top + "px";
+            var panelRect = dfnPanel.getBoundingClientRect();
+            var panelWidth = panelRect.right - panelRect.left;
+            if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
+                // Reposition, because the panel is overflowing
+                dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
+            }
+        } else {
+            console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
+        }
+    } else if(target == "dfn-panel") {
+        // Switch it to "activated" state, which pins it.
+        el.classList.add("activated");
+        el.style.left = null;
+        el.style.top = null;
+    }
+
+});
+</script>
