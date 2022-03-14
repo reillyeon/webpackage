@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/webpackage/subresource-loading.html" rel="canonical">
-  <meta content="aef4300806df29012b3d744d958fcdd278e9fa46" name="document-revision">
+  <meta content="de8d0254560b76a98db5ba8b01bf0e0630d369f1" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -451,7 +451,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Loading with Web Bundles</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-03-07">7 March 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-03-14">14 March 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -540,13 +540,13 @@ defined in <a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-res
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="bundle-rule">bundle rule</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item">items</a>:</p>
    <ul>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-source">source</dfn>, a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URL</a>.</p>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-source">source</dfn>, a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URL</a> of a web bundle.</p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-credentials">credentials</dfn>, a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-mode" id="ref-for-concept-request-mode">mode</a>.</p>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-credentials">credentials</dfn>, a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode" id="ref-for-concept-request-credentials-mode">credentials mode</a>.</p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-resources">resources</dfn>, a list of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URLs</a>.</p>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-resources">resources</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URLs</a>.</p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-scopes">scopes</dfn>, a list of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URLs</a>.</p>
+     <p><dfn class="dfn-paneled" data-dfn-for="bundle rule" data-dfn-type="dfn" data-noexport id="bundle-rule-scopes">scopes</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URLs</a>.</p>
    </ul>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="web-bundle">web bundle</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct①">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item①">items</a>:</p>
    <ul>
@@ -558,7 +558,14 @@ defined in <a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-res
      <p><dfn class="dfn-paneled" data-dfn-for="web bundle" data-dfn-type="dfn" data-noexport id="web-bundle-state">state</dfn>, an internal state which is "fetching",
 "fetched", or "failed". Initially "fetching".</p>
    </ul>
-   <p>A <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-noexport id="document-web-bundle-list">web bundle list</dfn>, which is a list of <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle">web bundles</a>.</p>
+   <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object" id="ref-for-environment-settings-object">environment settings object</a> will get a <dfn class="dfn-paneled" data-dfn-for="environment settings object" data-dfn-type="dfn" data-noexport id="environment-settings-object-web-bundle-list">web bundle list</dfn> algorithm, which
+returns a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a> of <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle">web bundles</a>.</p>
+   <p>A <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-web-bundle-list">web bundle list</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a> of <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle①">web bundles</a>. It is initially empty.</p>
+   <p>In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#set-up-a-window-environment-settings-object" id="ref-for-set-up-a-window-environment-settings-object">set up a window environment settings object</a>, <var>settings object</var>’s <a data-link-type="dfn" href="#environment-settings-object-web-bundle-list" id="ref-for-environment-settings-object-web-bundle-list">web bundle
+list</a> returns the <a data-link-type="dfn" href="#document-web-bundle-list" id="ref-for-document-web-bundle-list">web bundle list</a> of <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window">associated <code>Document</code></a>.</p>
+   <p>In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#set-up-a-worker-environment-settings-object" id="ref-for-set-up-a-worker-environment-settings-object">set up a worker environment settings object</a>, <var>settings object</var>’s <a data-link-type="dfn" href="#environment-settings-object-web-bundle-list" id="ref-for-environment-settings-object-web-bundle-list①">web bundle
+list</a> returns an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a>.</p>
+   <p class="issue" id="issue-411f8f6f"><a class="self-link" href="#issue-411f8f6f"></a> Not supported for workers.</p>
    <h2 class="heading settled" data-level="3" id="html-monkeypatches"><span class="secno">3. </span><span class="content">HTML monkeypatches</span><a class="self-link" href="#html-monkeypatches"></a></h2>
    <p class="note" role="note"><span>Note:</span> TODO. This section uses <a data-link-type="dfn" href="#concept-fetch-web-bundle" id="ref-for-concept-fetch-web-bundle">fetch web bundle</a>.</p>
    <h2 class="heading settled" data-level="4" id="fetch-monkeypatches"><span class="secno">4. </span><span class="content">Fetch monkeypatches</span><a class="self-link" href="#fetch-monkeypatches"></a></h2>
@@ -584,7 +591,7 @@ given <var>httpRequest</var>.</p>
    </ol>
    <h2 class="heading settled" data-level="5" id="algorithms"><span class="secno">5. </span><span class="content">Algorithms</span><a class="self-link" href="#algorithms"></a></h2>
    <h3 class="heading settled" data-level="5.1" id="fetch-web-bundle"><span class="secno">5.1. </span><span class="content">Fetch web bundle</span><a class="self-link" href="#fetch-web-bundle"></a></h3>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-fetch-web-bundle">fetch web bundle</dfn> given <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle①">web
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-fetch-web-bundle">fetch web bundle</dfn> given <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle②">web
 bundle</a> <var>web bundle</var> and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetch-params" id="ref-for-fetch-params">fetch params</a> <var>fetch params</var>:</p>
    <ol>
     <li data-md>
@@ -597,9 +604,9 @@ bundle</a> <var>web bundle</var> and <a data-link-type="dfn" href="https://fetch
     <li data-md>
      <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination">destination</a> to "webbundle",</p>
     <li data-md>
-     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-mode" id="ref-for-concept-request-mode①">mode</a> to "cors",</p>
+     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-mode" id="ref-for-concept-request-mode">mode</a> to "cors",</p>
     <li data-md>
-     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode" id="ref-for-concept-request-credentials-mode">credentials mode</a> to <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule①">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-credentials" id="ref-for-bundle-rule-credentials">credentials</a>.</p>
+     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode" id="ref-for-concept-request-credentials-mode①">credentials mode</a> to <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule①">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-credentials" id="ref-for-bundle-rule-credentials">credentials</a>.</p>
     <li data-md>
      <p>Append a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header" id="ref-for-concept-header">header</a>, a tuple of ("Accept", "application/webbundle;v=b2"), to <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list">header list</a>.</p>
      <p class="note" role="note"><span>Note:</span> The final <a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-responses-latest">[draft-ietf-wpack-bundled-responses-latest]</a> will use a
@@ -629,10 +636,11 @@ bundle</a> <var>web bundle</var> and <a data-link-type="dfn" href="https://fetch
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-fetch-from-web-bundle">fetch from web bundle</dfn> given <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①">request</a> <var>httpRequest</var>:</p>
    <ol>
     <li data-md>
-     <p>For each <var>web bundle</var> of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document">document</a>'s <a data-link-type="dfn" href="#document-web-bundle-list" id="ref-for-document-web-bundle-list">web bundle list</a>:</p>
+     <p>For each <var>web bundle</var> of <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">client</a>'s <a data-link-type="dfn" href="#environment-settings-object-web-bundle-list" id="ref-for-environment-settings-object-web-bundle-list②">web bundle list</a>:</p>
      <ol>
       <li data-md>
-       <p>If the result of running <a data-link-type="dfn" href="#concept-match-url-with-web-bundle" id="ref-for-concept-match-url-with-web-bundle">match url with web bundle</a> given <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">url</a> and <var>web bundle</var> is true:</p>
+       <p>If the result of running <a data-link-type="dfn" href="#concept-match-url-with-web-bundle" id="ref-for-concept-match-url-with-web-bundle">match url with web bundle</a> given <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">url</a> and <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule②">rule</a> is
+  true:</p>
        <ol>
         <li data-md>
          <p>Let <var>response</var> be the result of <a data-link-type="dfn" href="#concept-get-response-from-web-bundle" id="ref-for-concept-get-response-from-web-bundle">get response from web bundle</a> given <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url②">url</a> and <var>web bundle</var>.</p>
@@ -647,16 +655,21 @@ bundle</a> <var>web bundle</var> and <a data-link-type="dfn" href="https://fetch
     <li data-md>
      <p>Return null.</p>
    </ol>
+   <p class="note" role="note"><span>Note:</span> Returning null here can fallback to HTTP cache and ordinal network fetch,
+unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error③">network error</a> above.</p>
    <h3 class="heading settled" data-level="5.3" id="match-url-with-web-bundle"><span class="secno">5.3. </span><span class="content">Match url with web bundle</span><a class="self-link" href="#match-url-with-web-bundle"></a></h3>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-match-url-with-web-bundle">match url with web bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">url</a> <var>url</var> and <a data-link-type="dfn" href="#web-bundle" id="ref-for-web-bundle②">web bundle</a> <var>web bundle</var>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="concept-match-url-with-web-bundle">match url with web bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">url</a> <var>url</var> and <a data-link-type="dfn" href="#bundle-rule" id="ref-for-bundle-rule①">bundle rule</a> <var>rule</var>:</p>
    <ol>
     <li data-md>
-     <p>If <var>url</var> doesn’t meet a path restriction rule, given <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule②">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-source" id="ref-for-bundle-rule-source①">source</a>, then return false.</p>
+     <p>If <var>url</var> doesn’t meet a path restriction rule, given <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-source" id="ref-for-bundle-rule-source①">source</a>, then return false.</p>
      <p class="issue" id="issue-3afe47ae"><a class="self-link" href="#issue-3afe47ae"></a> Clarify path restriction rule in algorithm.</p>
     <li data-md>
-     <p>If <var>url</var> matches any of <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule③">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-resources" id="ref-for-bundle-rule-resources">resources</a>, then return true.</p>
+     <p>If <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-resources" id="ref-for-bundle-rule-resources">resources</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> <var>url</var>, then return
+ true.</p>
     <li data-md>
-     <p>If <var>url</var>’s prefix matches any of <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-rule" id="ref-for-web-bundle-rule④">rule</a>'s <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes">scopes</a>, then return true.</p>
+     <p>If <var>url</var>’s prefix matches any of <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes">scopes</a>, then return
+ true.</p>
+     <p class="issue" id="issue-4e2fbfbe"><a class="self-link" href="#issue-4e2fbfbe"></a> Clarify prefix match rule in algorithm.</p>
     <li data-md>
      <p>Otherwise, return false.</p>
    </ol>
@@ -733,7 +746,12 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
    <li><a href="#bundle-rule-source">source</a><span>, in § 2</span>
    <li><a href="#web-bundle-state">state</a><span>, in § 2</span>
    <li><a href="#web-bundle">web bundle</a><span>, in § 2</span>
-   <li><a href="#document-web-bundle-list">web bundle list</a><span>, in § 2</span>
+   <li>
+    web bundle list
+    <ul>
+     <li><a href="#document-web-bundle-list">dfn for Document</a><span>, in § 2</span>
+     <li><a href="#environment-settings-object-web-bundle-list">dfn for environment settings object</a><span>, in § 2</span>
+    </ul>
   </ul>
   <aside class="dfn-panel" data-for="term-for-document">
    <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
@@ -741,16 +759,17 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
     <li><a href="#ref-for-document">2. Structures</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-document">
-   <a href="https://dom.spec.whatwg.org/#concept-document">https://dom.spec.whatwg.org/#concept-document</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-concept-request-client">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-client">https://fetch.spec.whatwg.org/#concept-request-client</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document">5.2. Fetch from web bundle</a>
+    <li><a href="#ref-for-concept-request-client">5.2. Fetch from web bundle</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-credentials-mode">
    <a href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode">https://fetch.spec.whatwg.org/#concept-request-credentials-mode</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-credentials-mode">5.1. Fetch web bundle</a>
+    <li><a href="#ref-for-concept-request-credentials-mode">2. Structures</a>
+    <li><a href="#ref-for-concept-request-credentials-mode①">5.1. Fetch web bundle</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-destination">
@@ -787,15 +806,14 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
   <aside class="dfn-panel" data-for="term-for-concept-request-mode">
    <a href="https://fetch.spec.whatwg.org/#concept-request-mode">https://fetch.spec.whatwg.org/#concept-request-mode</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-mode">2. Structures</a>
-    <li><a href="#ref-for-concept-request-mode①">5.1. Fetch web bundle</a>
+    <li><a href="#ref-for-concept-request-mode">5.1. Fetch web bundle</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-network-error">
    <a href="https://fetch.spec.whatwg.org/#concept-network-error">https://fetch.spec.whatwg.org/#concept-network-error</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-network-error">4.1. Monkeypatch HTTP-network-or-cache fetch</a> <a href="#ref-for-concept-network-error①">(2)</a>
-    <li><a href="#ref-for-concept-network-error②">5.2. Fetch from web bundle</a>
+    <li><a href="#ref-for-concept-network-error②">5.2. Fetch from web bundle</a> <a href="#ref-for-concept-network-error③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request">
@@ -824,10 +842,46 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
     <li><a href="#ref-for-concept-request-url①">5.2. Fetch from web bundle</a> <a href="#ref-for-concept-request-url②">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-document-window">
+   <a href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window">https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-document-window">2. Structures</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-environment-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-environment-settings-object">2. Structures</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-set-up-a-window-environment-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/window-object.html#set-up-a-window-environment-settings-object">https://html.spec.whatwg.org/multipage/window-object.html#set-up-a-window-environment-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-set-up-a-window-environment-settings-object">2. Structures</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-set-up-a-worker-environment-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/workers.html#set-up-a-worker-environment-settings-object">https://html.spec.whatwg.org/multipage/workers.html#set-up-a-worker-environment-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-set-up-a-worker-environment-settings-object">2. Structures</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-contain">
+   <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-contain">5.3. Match url with web bundle</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-struct-item">
    <a href="https://infra.spec.whatwg.org/#struct-item">https://infra.spec.whatwg.org/#struct-item</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-struct-item">2. Structures</a> <a href="#ref-for-struct-item①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list">
+   <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list">2. Structures</a> <a href="#ref-for-list①">(2)</a> <a href="#ref-for-list②">(3)</a> <a href="#ref-for-list③">(4)</a> <a href="#ref-for-list④">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-struct">
@@ -850,11 +904,11 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-document">Document</span>
-     <li><span class="dfn-paneled" id="term-for-concept-document">document</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-request-client">client</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-credentials-mode">credentials mode</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-destination">destination</span>
      <li><span class="dfn-paneled" id="term-for-fetch-params">fetch params</span>
@@ -869,9 +923,19 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
      <li><span class="dfn-paneled" id="term-for-concept-request-url">url</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[HTML]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-document-window">associated document</span>
+     <li><span class="dfn-paneled" id="term-for-environment-settings-object">environment settings object</span>
+     <li><span class="dfn-paneled" id="term-for-set-up-a-window-environment-settings-object">set up a window environment settings object</span>
+     <li><span class="dfn-paneled" id="term-for-set-up-a-worker-environment-settings-object">set up a worker environment settings object</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-list-contain">contain</span>
      <li><span class="dfn-paneled" id="term-for-struct-item">item</span>
+     <li><span class="dfn-paneled" id="term-for-list">list</span>
      <li><span class="dfn-paneled" id="term-for-struct">struct</span>
     </ul>
    <li>
@@ -887,6 +951,8 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-html">[HTML]
+   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
@@ -898,12 +964,12 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
   <dl>
    <dt id="biblio-draft-ietf-wpack-bundled-responses-latest">[DRAFT-IETF-WPACK-BUNDLED-RESPONSES-LATEST]
    <dd><a href="https://wpack-wg.github.io/bundled-responses/draft-ietf-wpack-bundled-responses.html"><cite>Web Bundles</cite></a>. URL: <a href="https://wpack-wg.github.io/bundled-responses/draft-ietf-wpack-bundled-responses.html">https://wpack-wg.github.io/bundled-responses/draft-ietf-wpack-bundled-responses.html</a>
-   <dt id="biblio-html">[HTML]
-   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
+   <div class="issue"> Not supported for workers. <a class="issue-return" href="#issue-411f8f6f" title="Jump to section">↵</a></div>
    <div class="issue"> Clarify path restriction rule in algorithm. <a class="issue-return" href="#issue-3afe47ae" title="Jump to section">↵</a></div>
+   <div class="issue"> Clarify prefix match rule in algorithm. <a class="issue-return" href="#issue-4e2fbfbe" title="Jump to section">↵</a></div>
   </div>
   <aside class="dfn-panel" data-for="fetched-web-bundle">
    <b><a href="#fetched-web-bundle">#fetched-web-bundle</a></b><b>Referenced in:</b>
@@ -915,6 +981,7 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
    <b><a href="#bundle-rule">#bundle-rule</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-bundle-rule">2. Structures</a>
+    <li><a href="#ref-for-bundle-rule①">5.3. Match url with web bundle</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="bundle-rule-source">
@@ -945,9 +1012,8 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
   <aside class="dfn-panel" data-for="web-bundle">
    <b><a href="#web-bundle">#web-bundle</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-web-bundle">2. Structures</a>
-    <li><a href="#ref-for-web-bundle①">5.1. Fetch web bundle</a>
-    <li><a href="#ref-for-web-bundle②">5.3. Match url with web bundle</a>
+    <li><a href="#ref-for-web-bundle">2. Structures</a> <a href="#ref-for-web-bundle①">(2)</a>
+    <li><a href="#ref-for-web-bundle②">5.1. Fetch web bundle</a>
     <li><a href="#ref-for-web-bundle③">5.4. Get response from web bundle</a>
    </ul>
   </aside>
@@ -962,7 +1028,7 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
    <b><a href="#web-bundle-rule">#web-bundle-rule</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-web-bundle-rule">5.1. Fetch web bundle</a> <a href="#ref-for-web-bundle-rule①">(2)</a>
-    <li><a href="#ref-for-web-bundle-rule②">5.3. Match url with web bundle</a> <a href="#ref-for-web-bundle-rule③">(2)</a> <a href="#ref-for-web-bundle-rule④">(3)</a>
+    <li><a href="#ref-for-web-bundle-rule②">5.2. Fetch from web bundle</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="web-bundle-state">
@@ -972,10 +1038,17 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
     <li><a href="#ref-for-web-bundle-state④">5.4. Get response from web bundle</a> <a href="#ref-for-web-bundle-state⑤">(2)</a> <a href="#ref-for-web-bundle-state⑥">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="environment-settings-object-web-bundle-list">
+   <b><a href="#environment-settings-object-web-bundle-list">#environment-settings-object-web-bundle-list</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-environment-settings-object-web-bundle-list">2. Structures</a> <a href="#ref-for-environment-settings-object-web-bundle-list①">(2)</a>
+    <li><a href="#ref-for-environment-settings-object-web-bundle-list②">5.2. Fetch from web bundle</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="document-web-bundle-list">
    <b><a href="#document-web-bundle-list">#document-web-bundle-list</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-document-web-bundle-list">5.2. Fetch from web bundle</a>
+    <li><a href="#ref-for-document-web-bundle-list">2. Structures</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="concept-fetch-web-bundle">
