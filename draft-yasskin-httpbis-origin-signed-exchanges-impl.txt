@@ -5,7 +5,7 @@
 Network Working Group                                         J. Yasskin
 Internet-Draft                                               K. Sakamoto
 Intended status: Standards Track                                  Google
-Expires: 24 September 2022                                 23 March 2022
+Expires: 1 October 2022                                    30 March 2022
 
 
             Signed HTTP Exchanges Implementation Checkpoints
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2022.
+   This Internet-Draft will expire on 1 October 2022.
 
 Copyright Notice
 

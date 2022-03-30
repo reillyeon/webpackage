@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/webpackage/subresource-loading.html" rel="canonical">
-  <meta content="17be49da9a5a018417c2c8178a5fa05303803d19" name="document-revision">
+  <meta content="6b415d83dd9f2143c9e1872db06c5156935d122d" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -451,7 +451,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Loading with Web Bundles</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-03-23">23 March 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-03-30">30 March 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -676,7 +676,7 @@ bundle</a> <var>web bundle</var> and <a data-link-type="dfn" href="https://fetch
      <p class="note" role="note"><span>Note:</span> Chromium’s current implementation doesn’t allow a <em>nested bundle</em>. A
  Web bundle is never fetched from other web bundles.</p>
     <li data-md>
-     <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is 200,</p>
+     <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status">ok status</a>,</p>
      <ol>
       <li data-md>
        <p>Set <var>web bundle</var>’s <a data-link-type="dfn" href="#web-bundle-fetched-bundle" id="ref-for-web-bundle-fetched-bundle">fetched bundle</a> to the result of parsing <var>response</var>’s body (<a data-link-type="biblio" href="#biblio-draft-ietf-wpack-bundled-responses-latest">[draft-ietf-wpack-bundled-responses-latest]</a>) and <var>web
@@ -897,6 +897,12 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
     <li><a href="#ref-for-concept-network-error②">6.2. Fetch from web bundle</a> <a href="#ref-for-concept-network-error③">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-ok-status">
+   <a href="https://fetch.spec.whatwg.org/#ok-status">https://fetch.spec.whatwg.org/#ok-status</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-ok-status">6.1. Fetch web bundle</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-redirect-count">
    <a href="https://fetch.spec.whatwg.org/#concept-request-redirect-count">https://fetch.spec.whatwg.org/#concept-request-redirect-count</a><b>Referenced in:</b>
    <ul>
@@ -1036,6 +1042,7 @@ bundle</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#co
      <li><span class="dfn-paneled" id="term-for-concept-http-network-or-cache-fetch">http-network-or-cache fetch</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-mode">mode</span>
      <li><span class="dfn-paneled" id="term-for-concept-network-error">network error</span>
+     <li><span class="dfn-paneled" id="term-for-ok-status">ok status</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-redirect-count">redirect count</span>
      <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
      <li><span class="dfn-paneled" id="term-for-concept-response">response</span>
