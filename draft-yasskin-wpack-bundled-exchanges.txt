@@ -4,8 +4,8 @@
 
 Network Working Group                                         J. Yasskin
 Internet-Draft                                                    Google
-Intended status: Standards Track                           30 March 2022
-Expires: 1 October 2022
+Intended status: Standards Track                            1 April 2022
+Expires: 3 October 2022
 
 
                               Web Bundles
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 October 2022.
+   This Internet-Draft will expire on 3 October 2022.
 
 Copyright Notice
 
@@ -637,7 +637,7 @@ Table of Contents
               JSON Data Structures", RFC 8610, DOI 10.17487/RFC8610,
               June 2019, <https://www.rfc-editor.org/rfc/rfc8610>.
 
-   [FETCH]    WHATWG, "Fetch", March 2022,
+   [FETCH]    WHATWG, "Fetch", April 2022,
               <https://fetch.spec.whatwg.org/>.
 
    [I-D.ietf-httpbis-semantics]
@@ -657,7 +657,7 @@ Table of Contents
               IANA, "Media Types",
               <https://www.iana.org/assignments/media-types>.
 
-   [INFRA]    WHATWG, "Infra", March 2022,
+   [INFRA]    WHATWG, "Infra", April 2022,
               <https://infra.spec.whatwg.org/>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -679,7 +679,7 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [URL]      WHATWG, "URL", March 2022, <https://url.spec.whatwg.org/>.
+   [URL]      WHATWG, "URL", April 2022, <https://url.spec.whatwg.org/>.
 
 7.2.  Informative References
 
