@@ -4,8 +4,8 @@
 
 Network Working Group                                         J. Yasskin
 Internet-Draft                                                    Google
-Intended status: Standards Track                            8 April 2022
-Expires: 10 October 2022
+Intended status: Standards Track                           12 April 2022
+Expires: 14 October 2022
 
 
                               Web Bundles
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 October 2022.
+   This Internet-Draft will expire on 14 October 2022.
 
 Copyright Notice
 
