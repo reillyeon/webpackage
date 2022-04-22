@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/webpackage/subresource-loading.html" rel="canonical">
-  <meta content="fcb50a7ed74c521f94adaef1955831beba302d19" name="document-revision">
+  <meta content="d20d17130412b5a4dcb988bb919644ce404b9370" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -451,7 +451,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Loading with Web Bundles</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-12">12 April 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-22">22 April 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -926,16 +926,81 @@ detailed motivation.</p>
    <ol>
     <li data-md>
      <p>Let <var>parsed</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#parse-a-json-string-to-an-infra-value" id="ref-for-parse-a-json-string-to-an-infra-value">parsing JSON
- into Infra values</a> given <var>sourceText</var>.</p>
+  into Infra values</a> given <var>sourceText</var>.</p>
     <li data-md>
      <p>If <var>parsed</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">map</a>, then throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code> indicating that the
- top-level value needs to be a JSON object.</p>
+  top-level value needs to be a JSON object.</p>
     <li data-md>
-     <p>Create a <a data-link-type="dfn" href="#web-bundle-parse-result" id="ref-for-web-bundle-parse-result">web bundle parse result</a> from <var>parsed</var> and <var>baseURL</var>, and return
- the <a data-link-type="dfn" href="#web-bundle-parse-result" id="ref-for-web-bundle-parse-result①">web bundle parse result</a>.</p>
+     <p>If <var>parsed</var>["<code>source</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exist</a>, then throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
+    <li data-md>
+     <p>If <var>parsed</var>["<code>source</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a>, then throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
+    <li data-md>
+     <p>Let <var>source</var> be the result of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-parser" id="ref-for-concept-url-parser">parsing</a> <var>parsed</var>["<code>source</code>"]
+  with <var>baseURL</var> as the base URL.</p>
+    <li data-md>
+     <p>If <var>source</var> is null, then throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code>.</p>
+    <li data-md>
+     <p>Let <var>credentials</var> be "<code>same-origin</code>".</p>
+    <li data-md>
+     <p>If <var>parsed</var>["<code>credentials</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a>, then:</p>
+     <ol>
+      <li data-md>
+       <p>If <var>parsed</var>["<code>credentials</code>"] is "<code>omit</code>", then set <var>credentials</var> to
+ "<code>omit</code>".</p>
+      <li data-md>
+       <p>Otherwise, if <var>parsed</var>["<code>credentials</code>"] is "<code>include</code>", then set <var>credentials</var> to "<code>include</code>".</p>
+     </ol>
+    <li data-md>
+     <p>Let <var>resources</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a>.</p>
+    <li data-md>
+     <p>If <var>parsed</var>["<code>resources</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exists</a>, then:</p>
+     <ol>
+      <li data-md>
+       <p>If <var>parsed</var>["<code>resources</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a>, then throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror④">TypeError</a></code>.</p>
+      <li data-md>
+       <p>Set <var>resources</var> to the result of <a data-link-type="dfn" href="#parse-a-url-list" id="ref-for-parse-a-url-list">parsing a url list</a> given <var>parsed</var>["<code>resources</code>"] and <var>baseURL</var>.</p>
+     </ol>
+    <li data-md>
+     <p>Let <var>scopes</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a>.</p>
+    <li data-md>
+     <p>If <var>parsed</var>["<code>scopes</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exists</a>, then:</p>
+     <ol>
+      <li data-md>
+       <p>If <var>parsed</var>["<code>scopes</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>, then throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑤">TypeError</a></code>.</p>
+      <li data-md>
+       <p>Set <var>scopes</var> to the result of <a data-link-type="dfn" href="#parse-a-url-list" id="ref-for-parse-a-url-list①">parsing a url list</a> given <var>parsed</var>["<code>scopes</code>"] and <var>baseURL</var>.</p>
+     </ol>
+    <li data-md>
+     <p>If <var>parsed</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys">keys</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain③">contains</a> any items besides
+  "<code>source</code>", "<code>credentials</code>", "<code>resources</code>" or "<code>scopes</code>", <a data-link-type="dfn" href="https://console.spec.whatwg.org/#report-a-warning-to-the-console" id="ref-for-report-a-warning-to-the-console">report a warning
+  to the console</a> that an invalid top-level key was present in the web bundle
+  string.</p>
+     <p class="note" role="note"><span>Note:</span> This can help detect typos. It is not an error, because that would
+  prevent any future extensions from being added backward-compatibly.</p>
+    <li data-md>
+     <p>Let <var>rule</var> be <a data-link-type="dfn" href="#bundle-rule" id="ref-for-bundle-rule②">bundle rule</a> whose <a data-link-type="dfn" href="#bundle-rule-resources" id="ref-for-bundle-rule-resources">resources</a> are <var>resources</var> and whose <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes">scopes</a> are <var>scopes</var>.</p>
+    <li data-md>
+     <p>Return the <a data-link-type="dfn" href="#web-bundle-parse-result" id="ref-for-web-bundle-parse-result">web bundle parse result</a> whose <a data-link-type="dfn" href="#web-bundle-parse-result-source" id="ref-for-web-bundle-parse-result-source②">source</a> is <var>source</var>, whose <a data-link-type="dfn" href="#web-bundle-parse-result-credentials" id="ref-for-web-bundle-parse-result-credentials②">credentials</a> are <var>credentials</var> and whose <a data-link-type="dfn" href="#web-bundle-parse-result-rule" id="ref-for-web-bundle-parse-result-rule①">rule</a> is <var>rule</var> .</p>
    </ol>
-   <p class="issue" id="issue-b49bdc0c"><a class="self-link" href="#issue-b49bdc0c"></a> Specify the details. Throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code> etc. on a parse error.
-Relative URLs are resolved on <var>baseURL</var>.</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-url-list">parse a URL list</dfn>, given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a> <var>originalList</var> and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑥">URL</a> <var>baseURL</var>:</p>
+   <ol>
+    <li data-md>
+     <p>Let <var>parsed URL list</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>.</p>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>item</var> of <var>originalList</var>,</p>
+     <ol>
+      <li data-md>
+       <p>If <var>item</var> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a>, then</p>
+       <ol>
+        <li data-md>
+         <p>Let <var>URL</var> be the result of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-parser" id="ref-for-concept-url-parser①">parsing</a> <var>item</var> with <var>baseURL</var> as the base URL.</p>
+        <li data-md>
+         <p>If <var>URL</var> is not null, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">append</a> <var>URL</var> to <var>parsed URL list</var>.</p>
+       </ol>
+     </ol>
+    <li data-md>
+     <p>Return <var>parsed URL list</var>.</p>
+   </ol>
    <h3 class="heading settled" data-level="6.2" id="fetching-web-bundle"><span class="secno">6.2. </span><span class="content">Fetching a web bundle</span><a class="self-link" href="#fetching-web-bundle"></a></h3>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fetch-a-web-bundle">fetch a web bundle</dfn> given <a data-link-type="dfn" href="#web-bundle-fetch-entry" id="ref-for-web-bundle-fetch-entry⑥">web bundle fetch entry</a> <var>fetch entry</var> and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetch-params" id="ref-for-fetch-params">fetch params</a> <var>fetch params</var>:</p>
    <ol>
@@ -1011,7 +1076,7 @@ response</dfn> given <a data-link-type="dfn" href="#web-bundle-fetch-entry" id="
    </ol>
    <p class="note" role="note"><span>Note:</span> Returning null here can fallback to HTTP cache and ordinal network fetch,
 unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error③">network error</a> above.</p>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="get-response-from-web-bundle-fetch-entry">get response from web bundle fetch entry</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑥">url</a> <var>url</var> and <a data-link-type="dfn" href="#web-bundle-fetch-entry" id="ref-for-web-bundle-fetch-entry⑧">web bundle fetch entry</a> <var>fetch entry</var>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="get-response-from-web-bundle-fetch-entry">get response from web bundle fetch entry</dfn> given <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑦">url</a> <var>url</var> and <a data-link-type="dfn" href="#web-bundle-fetch-entry" id="ref-for-web-bundle-fetch-entry⑧">web bundle fetch entry</a> <var>fetch entry</var>:</p>
    <ol>
     <li data-md>
      <p>If <var>fetch entry</var>’s <a data-link-type="dfn" href="#web-bundle-fetch-entry-state" id="ref-for-web-bundle-fetch-entry-state⑧">state</a> is "fetching", await
@@ -1042,9 +1107,9 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
        <p>If <var>url</var> doesn’t meet a path restriction rule, given <var>registration</var>’s <a data-link-type="dfn" href="#web-bundle-registration-fetch-entry" id="ref-for-web-bundle-registration-fetch-entry①⓪">fetch entry</a>'s <a data-link-type="dfn" href="#web-bundle-fetch-entry-source" id="ref-for-web-bundle-fetch-entry-source⑥">source</a>, then return null.</p>
        <p class="issue" id="issue-3afe47ae"><a class="self-link" href="#issue-3afe47ae"></a> Clarify path restriction rule in algorithm.</p>
       <li data-md>
-       <p>If <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-resources" id="ref-for-bundle-rule-resources">resources</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain③">contains</a> <var>url</var>, then return <var>registration</var>.</p>
+       <p>If <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-resources" id="ref-for-bundle-rule-resources①">resources</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain④">contains</a> <var>url</var>, then return <var>registration</var>.</p>
       <li data-md>
-       <p>If <var>url</var>’s prefix matches any of <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes">scopes</a>, then
+       <p>If <var>url</var>’s prefix matches any of <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes①">scopes</a>, then
   return <var>registration</var>.</p>
        <p class="issue" id="issue-4e2fbfbe"><a class="self-link" href="#issue-4e2fbfbe"></a> Clarify prefix match rule in algorithm.</p>
      </ol>
@@ -1112,6 +1177,7 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
    <li><a href="#web-bundle-registration-fetch-entry">fetch entry</a><span>, in § 2</span>
    <li><a href="#find-a-matching-web-bundle-registration">find a matching web bundle registration</a><span>, in § 6.5</span>
    <li><a href="#get-response-from-web-bundle-fetch-entry">get response from web bundle fetch entry</a><span>, in § 6.4</span>
+   <li><a href="#parse-a-url-list">parse a URL list</a><span>, in § 6.1</span>
    <li><a href="#parse-a-web-bundle-string">parse a web bundle string</a><span>, in § 6.1</span>
    <li><a href="#prepare-a-web-bundle">prepare a web bundle</a><span>, in § 3.1</span>
    <li><a href="#process-events-for-a-web-bundle">process events for a web bundle</a><span>, in § 3.2</span>
@@ -1146,6 +1212,12 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
     </ul>
    <li><a href="#web-bundle-result">web bundle result</a><span>, in § 3</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-report-a-warning-to-the-console">
+   <a href="https://console.spec.whatwg.org/#report-a-warning-to-the-console">https://console.spec.whatwg.org/#report-a-warning-to-the-console</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-report-a-warning-to-the-console">6.1. Parsing</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-policy-self-origin">
    <a href="https://w3c.github.io/webappsec-csp/#policy-self-origin">https://w3c.github.io/webappsec-csp/#policy-self-origin</a><b>Referenced in:</b>
    <ul>
@@ -1425,6 +1497,7 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
    <a href="https://infra.spec.whatwg.org/#list-append">https://infra.spec.whatwg.org/#list-append</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-list-append">3.1. Prepare a script</a> <a href="#ref-for-list-append①">(2)</a>
+    <li><a href="#ref-for-list-append②">6.1. Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ascii-case-insensitive">
@@ -1438,7 +1511,26 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
    <ul>
     <li><a href="#ref-for-list-contain">2. Structures</a>
     <li><a href="#ref-for-list-contain①">3.3. Removing</a> <a href="#ref-for-list-contain②">(2)</a>
-    <li><a href="#ref-for-list-contain③">6.5. Finding a matching registration</a>
+    <li><a href="#ref-for-list-contain③">6.1. Parsing</a>
+    <li><a href="#ref-for-list-contain④">6.5. Finding a matching registration</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-map-exists">
+   <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-map-exists">6.1. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-iterate">
+   <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-iterate">6.1. Parsing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-map-getting-the-keys">
+   <a href="https://infra.spec.whatwg.org/#map-getting-the-keys">https://infra.spec.whatwg.org/#map-getting-the-keys</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-map-getting-the-keys">6.1. Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-struct-item">
@@ -1452,6 +1544,7 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
    <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-list">2. Structures</a> <a href="#ref-for-list①">(2)</a> <a href="#ref-for-list②">(3)</a> <a href="#ref-for-list③">(4)</a> <a href="#ref-for-list④">(5)</a> <a href="#ref-for-list⑤">(6)</a> <a href="#ref-for-list⑥">(7)</a>
+    <li><a href="#ref-for-list⑦">6.1. Parsing</a> <a href="#ref-for-list⑧">(2)</a> <a href="#ref-for-list⑨">(3)</a> <a href="#ref-for-list①⓪">(4)</a> <a href="#ref-for-list①①">(5)</a> <a href="#ref-for-list①②">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-map">
@@ -1476,7 +1569,7 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
    <a href="https://infra.spec.whatwg.org/#string">https://infra.spec.whatwg.org/#string</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-string">3.1. Prepare a script</a>
-    <li><a href="#ref-for-string①">6.1. Parsing</a>
+    <li><a href="#ref-for-string①">6.1. Parsing</a> <a href="#ref-for-string②">(2)</a> <a href="#ref-for-string③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-struct">
@@ -1504,18 +1597,29 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
    <ul>
     <li><a href="#ref-for-concept-url">2. Structures</a> <a href="#ref-for-concept-url①">(2)</a> <a href="#ref-for-concept-url②">(3)</a> <a href="#ref-for-concept-url③">(4)</a>
     <li><a href="#ref-for-concept-url④">3.1. Prepare a script</a>
-    <li><a href="#ref-for-concept-url⑤">6.1. Parsing</a>
-    <li><a href="#ref-for-concept-url⑥">6.4. Fetching subresources from a web bundle</a>
+    <li><a href="#ref-for-concept-url⑤">6.1. Parsing</a> <a href="#ref-for-concept-url⑥">(2)</a>
+    <li><a href="#ref-for-concept-url⑦">6.4. Fetching subresources from a web bundle</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-parser">
+   <a href="https://url.spec.whatwg.org/#concept-url-parser">https://url.spec.whatwg.org/#concept-url-parser</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-parser">6.1. Parsing</a> <a href="#ref-for-concept-url-parser①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror">https://webidl.spec.whatwg.org/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">6.1. Parsing</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a>
+    <li><a href="#ref-for-exceptiondef-typeerror">6.1. Parsing</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a> <a href="#ref-for-exceptiondef-typeerror②">(3)</a> <a href="#ref-for-exceptiondef-typeerror③">(4)</a> <a href="#ref-for-exceptiondef-typeerror④">(5)</a> <a href="#ref-for-exceptiondef-typeerror⑤">(6)</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
+   <li>
+    <a data-link-type="biblio">[CONSOLE]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-report-a-warning-to-the-console">report a warning to the console</span>
+    </ul>
    <li>
     <a data-link-type="biblio">[CSP]</a> defines the following terms:
     <ul>
@@ -1581,6 +1685,9 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
      <li><span class="dfn-paneled" id="term-for-list-append">append</span>
      <li><span class="dfn-paneled" id="term-for-ascii-case-insensitive">ascii case-insensitive</span>
      <li><span class="dfn-paneled" id="term-for-list-contain">contain</span>
+     <li><span class="dfn-paneled" id="term-for-map-exists">exist</span>
+     <li><span class="dfn-paneled" id="term-for-list-iterate">for each</span>
+     <li><span class="dfn-paneled" id="term-for-map-getting-the-keys">get the keys</span>
      <li><span class="dfn-paneled" id="term-for-struct-item">item</span>
      <li><span class="dfn-paneled" id="term-for-list">list</span>
      <li><span class="dfn-paneled" id="term-for-ordered-map">map</span>
@@ -1595,6 +1702,7 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
      <li><span class="dfn-paneled" id="term-for-concept-url-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-concept-url-scheme">scheme</span>
      <li><span class="dfn-paneled" id="term-for-concept-url">url</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-parser">url parser</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
@@ -1605,6 +1713,8 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-console">[CONSOLE]
+   <dd>Dominic Farolino; Robert Kowalski; Terin Stock. <a href="https://console.spec.whatwg.org/"><cite>Console Standard</cite></a>. Living Standard. URL: <a href="https://console.spec.whatwg.org/">https://console.spec.whatwg.org/</a>
    <dt id="biblio-csp">[CSP]
    <dd>Mike West. <a href="https://www.w3.org/TR/CSP3/"><cite>Content Security Policy Level 3</cite></a>. 29 June 2021. WD. URL: <a href="https://www.w3.org/TR/CSP3/">https://www.w3.org/TR/CSP3/</a>
    <dt id="biblio-dom">[DOM]
@@ -1636,8 +1746,6 @@ order shouldn’t be important. <a class="issue-return" href="#issue-0a9e75a1" t
    <div class="issue"> There are no relevant <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-script">script</a>,
   because <a data-link-type="dfn" href="#web-bundle-result">web bundle result</a> isn’t a <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-script">script</a>.
   This needs to wait for <a href="https://github.com/whatwg/html/issues/958">whatwg/html#958</a> before it is fixable. <a class="issue-return" href="#issue-bb807bb8" title="Jump to section">↵</a></div>
-   <div class="issue"> Specify the details. Throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror">TypeError</a></code> etc. on a parse error.
-Relative URLs are resolved on <var>baseURL</var>. <a class="issue-return" href="#issue-b49bdc0c" title="Jump to section">↵</a></div>
    <div class="issue"> Clarify path restriction rule in algorithm. <a class="issue-return" href="#issue-3afe47ae" title="Jump to section">↵</a></div>
    <div class="issue"> Clarify prefix match rule in algorithm. <a class="issue-return" href="#issue-4e2fbfbe" title="Jump to section">↵</a></div>
   </div>
@@ -1705,18 +1813,21 @@ Relative URLs are resolved on <var>baseURL</var>. <a class="issue-return" href="
    <b><a href="#bundle-rule">#bundle-rule</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-bundle-rule">2. Structures</a> <a href="#ref-for-bundle-rule①">(2)</a>
+    <li><a href="#ref-for-bundle-rule②">6.1. Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="bundle-rule-resources">
    <b><a href="#bundle-rule-resources">#bundle-rule-resources</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-bundle-rule-resources">6.5. Finding a matching registration</a>
+    <li><a href="#ref-for-bundle-rule-resources">6.1. Parsing</a>
+    <li><a href="#ref-for-bundle-rule-resources①">6.5. Finding a matching registration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="bundle-rule-scopes">
    <b><a href="#bundle-rule-scopes">#bundle-rule-scopes</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-bundle-rule-scopes">6.5. Finding a matching registration</a>
+    <li><a href="#ref-for-bundle-rule-scopes">6.1. Parsing</a>
+    <li><a href="#ref-for-bundle-rule-scopes①">6.5. Finding a matching registration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="web-bundle-registration">
@@ -1751,25 +1862,28 @@ Relative URLs are resolved on <var>baseURL</var>. <a class="issue-return" href="
   <aside class="dfn-panel" data-for="web-bundle-parse-result">
    <b><a href="#web-bundle-parse-result">#web-bundle-parse-result</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-web-bundle-parse-result">6.1. Parsing</a> <a href="#ref-for-web-bundle-parse-result①">(2)</a>
+    <li><a href="#ref-for-web-bundle-parse-result">6.1. Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="web-bundle-parse-result-source">
    <b><a href="#web-bundle-parse-result-source">#web-bundle-parse-result-source</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-web-bundle-parse-result-source">3.1. Prepare a script</a> <a href="#ref-for-web-bundle-parse-result-source①">(2)</a>
+    <li><a href="#ref-for-web-bundle-parse-result-source②">6.1. Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="web-bundle-parse-result-credentials">
    <b><a href="#web-bundle-parse-result-credentials">#web-bundle-parse-result-credentials</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-web-bundle-parse-result-credentials">3.1. Prepare a script</a> <a href="#ref-for-web-bundle-parse-result-credentials①">(2)</a>
+    <li><a href="#ref-for-web-bundle-parse-result-credentials②">6.1. Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="web-bundle-parse-result-rule">
    <b><a href="#web-bundle-parse-result-rule">#web-bundle-parse-result-rule</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-web-bundle-parse-result-rule">3.1. Prepare a script</a>
+    <li><a href="#ref-for-web-bundle-parse-result-rule①">6.1. Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="environment-settings-object-web-bundle-registration-list">
@@ -1845,6 +1959,12 @@ Relative URLs are resolved on <var>baseURL</var>. <a class="issue-return" href="
    <b><a href="#parse-a-web-bundle-string">#parse-a-web-bundle-string</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-parse-a-web-bundle-string">3.1. Prepare a script</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="parse-a-url-list">
+   <b><a href="#parse-a-url-list">#parse-a-url-list</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-parse-a-url-list">6.1. Parsing</a> <a href="#ref-for-parse-a-url-list①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="fetch-a-web-bundle">
