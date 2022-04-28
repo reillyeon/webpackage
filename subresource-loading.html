@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/webpackage/subresource-loading.html" rel="canonical">
-  <meta content="38390d9253a3ca344a18da9f5f61fabe94cd2a12" name="document-revision">
+  <meta content="7d2c409443b566e4d117541f6ced2e4b348d497a" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -1104,14 +1104,17 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
       <li data-md>
        <p>Let <var>rule</var> be <var>registration</var>’s <a data-link-type="dfn" href="#web-bundle-registration-rule" id="ref-for-web-bundle-registration-rule①">rule</a>.</p>
       <li data-md>
-       <p>If <var>url</var> doesn’t meet a path restriction rule, given <var>registration</var>’s <a data-link-type="dfn" href="#web-bundle-registration-fetch-entry" id="ref-for-web-bundle-registration-fetch-entry①⓪">fetch entry</a>'s <a data-link-type="dfn" href="#web-bundle-fetch-entry-source" id="ref-for-web-bundle-fetch-entry-source⑥">source</a>, then return null.</p>
-       <p class="issue" id="issue-3afe47ae"><a class="self-link" href="#issue-3afe47ae"></a> Clarify path restriction rule in algorithm.</p>
+       <p>If <var>url</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme②">scheme</a> is not "<code>uuid-in-package</code>", then</p>
+       <ol>
+        <li data-md>
+         <p>Let <var>allowed path</var> be the result of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#shorten-a-urls-path" id="ref-for-shorten-a-urls-path">shortening</a> <var>registration</var>’s <a data-link-type="dfn" href="#web-bundle-registration-fetch-entry" id="ref-for-web-bundle-registration-fetch-entry①⓪">fetch entry</a>'s <a data-link-type="dfn" href="#web-bundle-fetch-entry-source" id="ref-for-web-bundle-fetch-entry-source⑥">source</a>.</p>
+        <li data-md>
+         <p>If <var>url</var> doesn’t start with <var>allowed path</var>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue">continue</a>.</p>
+       </ol>
       <li data-md>
        <p>If <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-resources" id="ref-for-bundle-rule-resources①">resources</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain④">contains</a> <var>url</var>, then return <var>registration</var>.</p>
       <li data-md>
-       <p>If <var>url</var>’s prefix matches any of <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes①">scopes</a>, then
-  return <var>registration</var>.</p>
-       <p class="issue" id="issue-4e2fbfbe"><a class="self-link" href="#issue-4e2fbfbe"></a> Clarify prefix match rule in algorithm.</p>
+       <p>If <var>url</var> starts with any of <var>rule</var>’s <a data-link-type="dfn" href="#bundle-rule-scopes" id="ref-for-bundle-rule-scopes①">scopes</a>, then return <var>registration</var>.</p>
      </ol>
     <li data-md>
      <p>Return null.</p>
@@ -1515,6 +1518,12 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
     <li><a href="#ref-for-list-contain④">6.5. Finding a matching registration</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-iteration-continue">
+   <a href="https://infra.spec.whatwg.org/#iteration-continue">https://infra.spec.whatwg.org/#iteration-continue</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-iteration-continue">6.5. Finding a matching registration</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-map-exists">
    <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
    <ul>
@@ -1590,6 +1599,13 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
    <ul>
     <li><a href="#ref-for-concept-url-scheme">5.1. Monkeypatch Does request match source list?</a>
     <li><a href="#ref-for-concept-url-scheme①">5.2. Monkeypatch Does response to request match source list?</a>
+    <li><a href="#ref-for-concept-url-scheme②">6.5. Finding a matching registration</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-shorten-a-urls-path">
+   <a href="https://url.spec.whatwg.org/#shorten-a-urls-path">https://url.spec.whatwg.org/#shorten-a-urls-path</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-shorten-a-urls-path">6.5. Finding a matching registration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url">
@@ -1685,6 +1701,7 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
      <li><span class="dfn-paneled" id="term-for-list-append">append</span>
      <li><span class="dfn-paneled" id="term-for-ascii-case-insensitive">ascii case-insensitive</span>
      <li><span class="dfn-paneled" id="term-for-list-contain">contain</span>
+     <li><span class="dfn-paneled" id="term-for-iteration-continue">continue</span>
      <li><span class="dfn-paneled" id="term-for-map-exists">exist</span>
      <li><span class="dfn-paneled" id="term-for-list-iterate">for each</span>
      <li><span class="dfn-paneled" id="term-for-map-getting-the-keys">get the keys</span>
@@ -1701,6 +1718,7 @@ unlike returning a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#
     <ul>
      <li><span class="dfn-paneled" id="term-for-concept-url-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-concept-url-scheme">scheme</span>
+     <li><span class="dfn-paneled" id="term-for-shorten-a-urls-path">shortening</span>
      <li><span class="dfn-paneled" id="term-for-concept-url">url</span>
      <li><span class="dfn-paneled" id="term-for-concept-url-parser">url parser</span>
     </ul>
@@ -1746,8 +1764,6 @@ order shouldn’t be important. <a class="issue-return" href="#issue-0a9e75a1" t
    <div class="issue"> There are no relevant <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-script">script</a>,
   because <a data-link-type="dfn" href="#web-bundle-result">web bundle result</a> isn’t a <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-script">script</a>.
   This needs to wait for <a href="https://github.com/whatwg/html/issues/958">whatwg/html#958</a> before it is fixable. <a class="issue-return" href="#issue-bb807bb8" title="Jump to section">↵</a></div>
-   <div class="issue"> Clarify path restriction rule in algorithm. <a class="issue-return" href="#issue-3afe47ae" title="Jump to section">↵</a></div>
-   <div class="issue"> Clarify prefix match rule in algorithm. <a class="issue-return" href="#issue-4e2fbfbe" title="Jump to section">↵</a></div>
   </div>
   <aside class="dfn-panel" data-for="fetched-web-bundle">
    <b><a href="#fetched-web-bundle">#fetched-web-bundle</a></b><b>Referenced in:</b>
